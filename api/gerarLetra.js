@@ -105,37 +105,43 @@ export default async function handler(req, res) {
         const generoVocal = vocalGender === 'f' ? 'feminina' : 'masculina';
 
         // Monta o prompt para o OpenAI
-        const prompt = `Você é o compositor oficial da Canto com Amor, um serviço profissional de criação de músicas personalizadas.
+        const userPrompt = `
+### OBJETIVO
+Escreva uma letra de música profissional e emocionante para: ${destinatario}.
+Relacionamento: ${relacaoDescricao}.
+Ocasião: ${ocasiao}.
+Gênero Musical: ${estilo}.
 
-Escreva uma letra de música emocionante e personalizada para ${destinatario}, que é ${relacaoDescricao} de quem está pedindo esta música.
+### HISTÓRIA E DETALHES (USE ISSO PARA PERSONALIZAR):
+${historia}
 
-${ocasiaoDescricao !== 'momento especial' ? `A ocasião é: ${ocasiaoDescricao}.` : ''}
+### DIRETRIZES DE COMPOSIÇÃO:
+1. **Storytelling:** Não apenas cite os fatos, transforme-os em versos. Se a história menciona um café, transforme isso em uma metáfora de aconchego.
+2. **Estrutura Profissional:** A letra DEVE seguir esta progressão:
+   - (Verso 1): Introdução e detalhes da história.
+   - (Refrão): O ápice emocional, chiclete e memorável.
+   - (Verso 2): Aprofundamento da relação e momentos marcantes.
+   - (Ponte): Um clímax ou uma virada de perspectiva emocional.
+   - (Final/Outro): Desfecho carinhoso.
+3. **Adaptação de Gênero:** 
+   - Se for Sertanejo/Arrocha: Use termos como "brindar", "estrada", "destino".
+   - Se for MPB/Indie: Use uma linguagem mais lírica e metafórica.
+   - Se for Funk/Trap: Foco em ritmo, celebração e ostentação de amor.
+4. **Variedade:** Evite rimas pobres (amor/dor). Busque rimas ricas e métrica que encaixe no ritmo ${estilo}.
 
-${mensagem ? `Use estas informações/emoções como inspiração: "${mensagem}"` : 'Crie uma letra que expresse amor, carinho e admiração.'}
-
-A voz será ${generoVocal}, então adapte o tom e as rimas adequadamente.
-
-FORMATO DA RESPOSTA (JSON válido):
+### FORMATO DE SAÍDA:
+Retorne um objeto JSON com o seguinte formato:
 {
-    "titulo": "Título da Música",
-    "letra": "Verso 1\\n[letra do verso 1]\\n\\nRefrão\\n[letra do refrão]\\n\\nVerso 2\\n[letra do verso 2]\\n\\nRefrão\\n[letra do refrão]\\n\\nPonte\\n[letra da ponte]\\n\\nRefrão Final\\n[letra do refrão final]"
-}
-
-REGRAS IMPORTANTES:
-1. A letra deve ter entre 150-250 palavras
-2. Inclua pelo menos 2 versos, 1 refrão (repetido), e 1 ponte
-3. Use linguagem poética mas acessível
-4. Evite clichês excessivos
-5. Seja original e emocionante
-6. Retorne APENAS o JSON, sem texto adicional`;
-
+  "titulo": "Título Criativo da Música",
+  "letra": "A letra completa aqui, usando (Verso), (Refrão), (Ponte) para separar as seções."
+}`;
         // Chama a API do OpenAI
         const completion = await openai.chat.completions.create({
             model: 'gpt-4o-mini',
             messages: [
                 {
                     role: 'system',
-                    content: 'Você é o compositor oficial da Canto com Amor, um serviço profissional de criação de músicas personalizadas. Sempre responda em português do Brasil. Retorne apenas JSON válido.'
+                    content: 'Você é o Mestre Compositor da Canto com Amor. Sua missão é transformar histórias reais em letras de músicas profissionais, ricas em métrica e emoção, adaptando o vocabulário ao gênero musical escolhido. Retorne estritamente um JSON válido.'
                 },
                 {
                     role: 'user',

@@ -17,11 +17,11 @@ export default async function handler(req, res) {
         // NUNCA inclua chaves secretas ou dados sensíveis aqui
         const config = {
             whatsapp: {
-                numero: process.env.WHATSAPP_NUMBER || '5519971496763',
-                formatado: process.env.WHATSAPP_FORMATTED || '(19) 97149-6763'
+                numero: process.env.WHATSAPP_NUMBER || '554499723421',
+                formatado: process.env.WHATSAPP_FORMATTED || '(44) 99723-4215'
             },
             email: {
-                suporte: process.env.SUPPORT_EMAIL || 'support@songsforge.com'
+                suporte: process.env.SUPPORT_EMAIL || 'lucasrodriguesfavaro@gmail.com'
             },
             features: {
                 captchaEnabled: true,

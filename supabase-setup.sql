@@ -1,5 +1,5 @@
 -- ========================================
--- MonteSuaMusica - Setup Supabase
+-- Canto com Amor - Setup Supabase
 -- ========================================
 -- Execute este SQL no SQL Editor do Supabase
 -- https://app.supabase.com/project/_/sql

@@ -61,8 +61,8 @@
     // CONFIGURAÇÕES DO WHATSAPP
     // ========================================
     const WHATSAPP = {
-        numero: '5519971496763',
-        mensagemPadrao: 'Olá! Vim pelo site MonteSuaMúsica'
+        numero: '554499723421',
+        mensagemPadrao: 'Olá! Vim pelo site Canto com Amor'
     };
 
     // ========================================

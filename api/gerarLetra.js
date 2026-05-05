@@ -105,7 +105,7 @@ export default async function handler(req, res) {
         const generoVocal = vocalGender === 'f' ? 'feminina' : 'masculina';
 
         // Monta o prompt para o OpenAI
-        const prompt = `Você é um compositor profissional brasileiro especializado em ${estiloDescricao}.
+        const prompt = `Você é o compositor oficial da Canto com Amor, um serviço profissional de criação de músicas personalizadas.
 
 Escreva uma letra de música emocionante e personalizada para ${destinatario}, que é ${relacaoDescricao} de quem está pedindo esta música.
 
@@ -135,7 +135,7 @@ REGRAS IMPORTANTES:
             messages: [
                 {
                     role: 'system',
-                    content: 'Você é um compositor profissional brasileiro. Sempre responda em português do Brasil. Retorne apenas JSON válido.'
+                    content: 'Você é o compositor oficial da Canto com Amor, um serviço profissional de criação de músicas personalizadas. Sempre responda em português do Brasil. Retorne apenas JSON válido.'
                 },
                 {
                     role: 'user',

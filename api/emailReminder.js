@@ -107,7 +107,7 @@ export default async function handler(req, res) {
             <p>Precisa de ajuda? Responda este email ou entre em contato pelo WhatsApp.</p>
             
             <p>Com carinho,<br>
-            <strong>Equipe MonteSuaMúsica</strong></p>
+            <strong>Equipe Canto com Amor</strong></p>
         </div>
         <div class="footer">
             <p>Este email foi enviado porque você iniciou a criação de uma música personalizada.</p>

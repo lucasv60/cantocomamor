@@ -11,7 +11,7 @@
     // Configurações padrão (fallback)
     window.CONFIG = {
         whatsapp: { numero: '', formatado: '' },
-        email: { suporte: 'support@songsforge.com' },
+        email: { suporte: 'lucasrodriguesfavaro@gmail.com' },
         loaded: false
     };
 
@@ -36,7 +36,7 @@
     window.getWhatsAppLink = function(msg) {
         const numero = window.CONFIG.whatsapp.numero;
         if (!numero) return '#';
-        const texto = msg || 'Olá! Vim pelo site MonteSuaMúsica';
+        const texto = msg || 'Olá! Vim pelo site Canto com Amor';
         return `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
     };
 

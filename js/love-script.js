@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== Limite de revisões =====
     const REVISE_LIMIT = 2000;
     const REVISE_KEY   = 'revisoes_letra'; // sessionStorage
-    const WHATSAPP_LINK = 'https://wa.me/5519971496763'; // troque pelo seu número
+    const WHATSAPP_LINK = 'https://wa.me/554499723421'; // Canto com Amor
 
     function getReviseCount() {
         return parseInt(sessionStorage.getItem(REVISE_KEY) || '0');

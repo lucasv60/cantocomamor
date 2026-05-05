@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "nodemailer": "^8.0.7",
+    "openai": "^6.36.0"
+  }
+}

@@ -1,0 +1,697 @@
+/* ========================================
+   CUSTOM STYLES - Canto com Amor
+   Consolidado de todos os estilos inline
+   ======================================== */
+
+/* ========================================
+   1. ESTILOS BASE
+   ======================================== */
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #FAFAFA;
+}
+
+.handwritten {
+    font-family: 'Dancing Script', cursive;
+    color: #F4C2C2;
+}
+
+.gradient-bg {
+    background: linear-gradient(135deg, #F4C2C2 0%, #FFB7C5 100%);
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #F4C2C2 0%, #FFB7C5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.wave-bg {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 C20 0, 40 20, 60 10 S100 0, 100 10 L100 20 L0 20 Z' fill='%23F4C2C2' opacity='0.05'/%3E%3C/svg%3E");
+    background-size: 120px 60px;
+}
+
+.music-note {
+    position: absolute;
+    opacity: 0.1;
+    color: #F4C2C2;
+    z-index: 0;
+}
+
+.card-shadow {
+    box-shadow: 0 10px 30px rgba(244, 194, 194, 0.2);
+}
+
+/* ========================================
+   2. MODAL OVERLAY E CONTENT
+   ======================================== */
+
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   3. AUDIO E PLAYER
+   ======================================== */
+
+.audio-wave {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q 5 5, 10 10 T 20 10 T 30 10 T 40 10 T 50 10 T 60 10 T 70 10 T 80 10 T 90 10 T 100 10' stroke='%23F4C2C2' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 100px 20px;
+}
+
+.audio-wave-preview {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q 5 5, 10 10 T 20 10 T 30 10 T 40 10 T 50 10 T 60 10 T 70 10 T 80 10 T 90 10 T 100 10' stroke='%23F4C2C2' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 100px 20px;
+}
+
+.play-button {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.play-button:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* ========================================
+   4. FORMULÁRIOS E VALIDAÇÃO
+   ======================================== */
+
+.error-border {
+    border-color: #E57373 !important;
+    box-shadow: 0 0 0 1px #E57373 inset !important;
+}
+
+.error-message {
+    color: #E57373;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Shake animation para campos inválidos */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+.shake-error {
+    animation: shake 0.3s ease-in-out;
+}
+
+/* ========================================
+   5. MODAL - BOTÕES FIXOS
+   ======================================== */
+
+#nextStepBtn,
+.step2-sticky-buttons {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    padding-top: 12px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+}
+
+.step2-sticky-buttons {
+    background: white;
+}
+
+/* ========================================
+   6. SELETOR DE MÉTODO DE PAGAMENTO
+   ======================================== */
+
+.payment-method-btn {
+    border: 2px solid #e5e7eb;
+    background: white;
+    transition: all 0.2s ease;
+    min-height: 80px;
+    padding: 0.5rem !important;
+}
+
+.payment-method-btn:hover {
+    border-color: #a855f7;
+    background: #FFF0F5;
+}
+
+.payment-method-btn.active {
+    border-color: #F4C2C2;
+    background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
+    box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
+}
+
+.payment-method-btn.active .method-icon {
+    color: #F4C2C2 !important;
+}
+
+.payment-method-btn.active span {
+    color: #7c3aed;
+}
+
+.payment-method-btn .method-icon {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.payment-method-btn span {
+    font-size: 0.75rem !important;
+}
+
+.payment-method-btn .text-xs {
+    font-size: 0.65rem !important;
+    margin-top: 0.125rem !important;
+}
+
+/* ========================================
+   7. MODAL PIX
+   ======================================== */
+
+.pix-modal-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.pix-qr-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.pix-timer {
+    font-variant-numeric: tabular-nums;
+}
+
+.copy-btn:active {
+    transform: scale(0.95);
+}
+
+#pixModal {
+    z-index: 9999 !important;
+}
+
+#pixModal.hidden {
+    display: none !important;
+}
+
+#pixModal:not(.hidden) {
+    display: flex !important;
+}
+
+/* ========================================
+   8. MODAL BOLETO
+   ======================================== */
+
+#boletoModal {
+    z-index: 9999 !important;
+}
+
+#boletoModal.hidden {
+    display: none !important;
+}
+
+#boletoModal:not(.hidden) {
+    display: flex !important;
+}
+
+/* ========================================
+   9. MODAL RESULTADO PAGAMENTO
+   ======================================== */
+
+#paymentResultModal {
+    z-index: 9999 !important;
+}
+
+#paymentResultModal.hidden {
+    display: none !important;
+}
+
+#paymentResultModal:not(.hidden) {
+    display: flex !important;
+}
+
+.result-state {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-state.hidden {
+    display: none !important;
+}
+
+/* Animação do ícone de análise */
+#resultPending .fa-hourglass-half {
+    animation: pulseIcon 2s ease-in-out infinite;
+}
+
+@keyframes pulseIcon {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* ========================================
+   10. LOADING GLOBAL
+   ======================================== */
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-overlay.hidden {
+    display: none !important;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #F4C2C2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   11. FORMULÁRIO CONDICIONAL (CARTÃO/CPF)
+   ======================================== */
+
+.conditional-form {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+}
+
+.conditional-form.show {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 0.75rem;
+}
+
+/* ========================================
+   12. CHECKOUT - BOTÃO FIXO
+   ======================================== */
+
+.fixed-payment-buttons {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 16px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #e5e7eb;
+    margin: 0 -16px -16px -16px;
+    z-index: 100;
+}
+
+.btn-pay-primary {
+    background: linear-gradient(135deg, #F4C2C2 0%, #F4C2C2 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 16px 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-pay-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+}
+
+.btn-pay-primary .badge-oferta {
+    background: #fde047;
+    color: #7c3aed;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.btn-other-methods {
+    background: white;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 14px 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-other-methods:hover {
+    background: #f9fafb;
+}
+
+.other-methods-text {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* ========================================
+   13. FAQ SECTION
+   ======================================== */
+
+.faq-section {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.faq-section h4 {
+    font-weight: 700;
+    color: #166534;
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+.faq-item {
+    margin-bottom: 12px;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+}
+
+.faq-question {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.875rem;
+    margin-bottom: 2px;
+}
+
+.faq-answer {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+/* ========================================
+   14. PRICE BOX
+   ======================================== */
+
+.price-box-new {
+    background: linear-gradient(135deg, #fdf4ff 0%, #fce7f3 100%);
+    border: 2px solid #d946ef;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.price-original {
+    color: #9ca3af;
+    text-decoration: line-through;
+    font-size: 1.1rem;
+}
+
+.price-discount {
+    color: #7c3aed;
+    font-size: 1.75rem;
+    font-weight: 800;
+}
+
+.price-savings {
+    color: #16a34a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+/* ========================================
+   15. STEP 3 - COMPACTO
+   ======================================== */
+
+#step3Content {
+    padding-bottom: 0 !important;
+}
+
+#step3Content .text-lg { font-size: 1rem; }
+#step3Content .text-xl { font-size: 1.125rem; }
+#step3Content .text-2xl { font-size: 1.25rem; }
+#step3Content .p-4 { padding: 0.75rem; }
+#step3Content .mb-6 { margin-bottom: 1rem; }
+#step3Content .mb-4 { margin-bottom: 0.75rem; }
+#step3Content .mb-2 { margin-bottom: 0.5rem; }
+#step3Content .py-3 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+#step3Content .rounded-lg { border-radius: 0.5rem; }
+
+/* Preços compactos */
+.price-summary-compact .flex { padding: 0.25rem 0; }
+.price-summary-compact { font-size: 0.875rem; }
+.price-summary-compact .font-bold { font-size: 0.9rem; }
+
+/* ========================================
+   16. PAINEL OUTROS MÉTODOS
+   ======================================== */
+
+.other-methods-panel {
+    background: #FFF0F5;
+    border: 2px solid #e9d5ff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 12px;
+}
+
+/* ========================================
+   17. PAYMENT MODAL (LEGACY)
+   ======================================== */
+
+.payment-modal {
+    max-width: 500px;
+    width: 90%;
+}
+
+/* ========================================
+   18. EXAMPLE SLIDESHOW
+   ======================================== */
+
+.example-slideshow {
+    height: 160px;
+    position: relative;
+}
+
+/* ========================================
+   19. TYPEWRITER E ANIMAÇÕES
+   ======================================== */
+
+#typewriter {
+    display: inline-block;
+    color: #F683B3;
+    animation: blink 0.8s step-end infinite;
+    min-height: 1.1em;
+    vertical-align: middle;
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+/* Animação de Balanço Sutil (Sway) */
+@keyframes sway {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(1deg); }
+    75% { transform: rotate(-1deg); }
+}
+
+.animate-sway {
+    animation: sway 3s ease-in-out infinite;
+    transform-origin: center center;
+}
+
+/* Refino do Glow */
+#createSongBtn {
+    box-shadow: 0 0 15px 3px rgba(246, 131, 179, 0.5);
+}
+
+#createSongBtn:hover {
+    box-shadow: 0 0 20px 5px rgba(246, 131, 179, 0.7);
+}
+
+/* ========================================
+   20. RESPONSIVO - MOBILE
+   ======================================== */
+
+/* Campos de pagamento no mobile */
+@media (max-width: 768px) {
+    #cardFormSection input,
+    #cpfFormSection input,
+    #cardFormSection select {
+        font-size: 16px !important;
+        min-height: 48px;
+        padding: 12px;
+    }
+
+    /* Grid de parcelas/CVV mais espaçado */
+    #cardFormSection .grid-cols-3 {
+        gap: 8px;
+    }
+
+    /* Seletor de método de pagamento */
+    .payment-method-btn {
+        padding: 12px 8px !important;
+        min-height: 70px;
+    }
+}
+
+/* CRÍTICO: Previne zoom automático do iOS em inputs */
+@media screen and (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px !important;
+        transform: scale(1);
+    }
+
+    /* Ajusta selects que podem ter tamanho diferente */
+    select {
+        min-height: 44px;
+    }
+}
+
+/* Evita scroll automático agressivo no iOS ao focar campos */
+@supports (-webkit-touch-callout: none) {
+    .modal-content input:focus,
+    .modal-content select:focus,
+    .modal-content textarea:focus {
+        scroll-margin-top: 20px;
+        scroll-margin-bottom: 20px;
+    }
+
+    /* Previne zoom no focus especificamente */
+    input:focus,
+    select:focus,
+    textarea:focus {
+        font-size: 16px !important;
+    }
+}
+
+/* Modal mobile - scroll interno funcional */
+@media (max-width: 768px) {
+    #modal {
+        align-items: flex-start !important;
+        padding: 8px !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #modal .modal-content {
+        max-height: calc(100vh - 16px) !important;
+        max-height: calc(100dvh - 16px) !important;
+        margin: 0 auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Aumenta área de toque dos inputs */
+    #modal input,
+    #modal select,
+    #modal textarea {
+        min-height: 48px;
+        padding: 12px 14px;
+        font-size: 16px !important;
+        border-radius: 8px;
+    }
+
+    /* Labels mais legíveis */
+    #modal label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    /* Botões maiores e mais fáceis de tocar */
+    #modal button {
+        min-height: 48px;
+        font-size: 16px;
+    }
+
+    /* Espaçamento entre campos */
+    #modal .mb-3 {
+        margin-bottom: 16px;
+    }
+
+    /* Padding extra para garantir que botões não fiquem cortados */
+    #step1Content,
+    #step2Content,
+    #step3Content {
+        padding-bottom: 24px;
+    }
+
+    /* Botões com margem de segurança */
+    #nextStepBtn,
+    #goToPaymentBtn,
+    #regenerateLyricsBtn,
+    #backToStep1Btn,
+    #backToStep2Btn {
+        margin-bottom: 12px;
+    }
+}

@@ -1,4 +1,12 @@
 {
+  "name": "canto-com-amor",
+  "version": "1.0.0",
+  "description": "Canto com Amor - Transforme Seus Sentimentos em Música",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "npx serve .",
+    "build": "echo 'Static site - no build required'"
+  },
   "dependencies": {
     "nodemailer": "^8.0.7",
     "openai": "^6.36.0"

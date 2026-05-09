@@ -122,14 +122,36 @@
                     Você envia sua história e nós criamos uma música exclusiva para você.
                 </p>
                 <div class="flex justify-center">
-                    <button id="createSongBtn" onclick="var m=document.getElementById('modal');if(m)m.style.display='flex'" style="background-color: #F683B3;" class="text-white py-4 px-20 rounded-2xl font-semibold text-xl hover:opacity-90 transition duration-300 shadow-[0_0_15px_3px_rgba(246,131,179,0.5)] animate-sway">
-                        Crie Sua Música Agora
+                    <button id="createSongBtn" onclick="var m=document.getElementById('modal');if(m)m.style.display='flex'" style="background-color: #F683B3;" class="text-white py-5 px-8 w-full max-w-xs sm:max-w-sm rounded-2xl text-2xl font-bold hover:opacity-90 transition duration-300 shadow-[0_0_18px_4px_rgba(246,131,179,0.5)] animate-sway">
+                        Crie Sua Música
                     </button>
+                </div>
+                <!-- Trust Badges (Selos de Confiança) -->
+                <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-8 text-gray-400 text-xs">
+                    <div class="flex items-center gap-1.5">
+                        <i class="fas fa-shield-alt text-sm"></i>
+                        <span>Pagamento Seguro</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <i class="fas fa-bolt text-sm"></i>
+                        <span>Entrega Instantânea</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <i class="fas fa-heart text-sm"></i>
+                        <span>Satisfação Garantida</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Conteúdo Direito - Spotify Player Funcional (Dito com Amor) -->
-            <div class="w-full flex justify-center -mt-4 mb-32 md:w-1/2" style="min-height: 600px; display: flex; justify-content: flex-start; align-items: center; padding-bottom: 3rem;">
+            <div class="w-full flex justify-center relative -mt-4 mb-32 md:w-1/2" style="min-height: 600px; display: flex; justify-content: flex-start; align-items: center; padding-bottom: 3rem;">
+                <!-- Setas de Navegação Externas -->
+                <button onclick="musicaAnterior()" class="flex absolute top-1/2 left-4 -translate-y-1/2 bg-white/90 shadow-lg rounded-full w-12 h-12 items-center justify-center text-pink-500 hover:text-pink-600 hover:scale-110 hover:shadow-xl transition-all duration-200 z-30">
+                    <i class="fas fa-chevron-left text-xl"></i>
+                </button>
+                <button onclick="proximaMusica()" class="flex absolute top-1/2 right-4 -translate-y-1/2 bg-white/90 shadow-lg rounded-full w-12 h-12 items-center justify-center text-pink-500 hover:text-pink-600 hover:scale-110 hover:shadow-xl transition-all duration-200 z-30">
+                    <i class="fas fa-chevron-right text-xl"></i>
+                </button>
                 <div id="smartphoneMockup" class="mx-auto relative -mt-8" style="width: 280px; height: 560px;">
                     <!-- Chassi do iPhone -->
                     <div class="absolute inset-0 bg-[#1a1a1a] border-[12px] border-[#1a1a1a] rounded-[3.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.4)] z-10"></div>
@@ -194,11 +216,11 @@
                                 <!-- Controles -->
                                 <div class="flex justify-between items-center px-2">
                                     <button class="text-gray-300 hover:text-pink-500 transition"><i class="fas fa-random text-sm"></i></button>
-                                    <button class="text-gray-700 hover:text-gray-900 transition"><i class="fas fa-step-backward text-2xl"></i></button>
+                                    <button onclick="musicaAnterior()" class="text-gray-700 hover:text-gray-900 transition p-3"><i class="fas fa-step-backward text-2xl"></i></button>
                                     <button id="playPauseBtn" onclick="togglePlay()" class="bg-gray-900 w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition transform">
                                         <i id="playPauseIcon" class="fas fa-play text-white text-2xl ml-1"></i>
                                     </button>
-                                    <button class="text-gray-700 hover:text-gray-900 transition"><i class="fas fa-step-forward text-2xl"></i></button>
+                                    <button onclick="proximaMusica()" class="text-gray-700 hover:text-gray-900 transition p-3"><i class="fas fa-step-forward text-2xl"></i></button>
                                     <button class="text-gray-300 hover:text-pink-500 transition"><i class="fas fa-redo text-sm"></i></button>
                                 </div>
                             </div>
@@ -236,6 +258,106 @@
         <source src="" type="audio/mpeg">
         Seu navegador não suporta o elemento de áudio.
     </audio>
+</section>
+
+<!-- Seção Reação ao Presente -->
+<section id="examples" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-sm md:max-w-xl mx-auto bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+            <!-- Foto Circular -->
+            <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg mx-auto mb-6">
+                <picture>
+                    <source srcset="images/depoimento.webp" type="image/webp">
+                    <img src="images/depoimento.jpg" alt="João D." width="800" height="534" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                </picture>
+            </div>
+            
+            <!-- Nome -->
+            <p class="font-bold text-xl text-gray-800 mb-2">João D.</p>
+            
+            <!-- Estrelas -->
+            <div class="flex justify-center gap-1 text-pink-500 text-xl mb-6">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            
+            <!-- Depoimento -->
+            <blockquote class="text-lg md:text-xl italic text-gray-600 leading-relaxed mb-6">
+                "Dei uma música para minha esposa em nosso aniversário e ela chorou de felicidade. Foi o presente mais significativo que já dei."
+            </blockquote>
+            
+            <!-- Legenda -->
+            <p class="text-sm text-gray-400">Presente de Aniversário</p>
+        </div>
+    </div>
+</section>
+
+<!-- Seção Depoimentos -->
+<section id="testimonials" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
+            O Que Nossos <span class="gradient-text">Clientes Dizem</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-gray-50 rounded-2xl p-8 relative">
+                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <p class="text-lg italic mb-6 relative z-10">
+                    "Eu estava cético no início, mas a música que criaram para o 60º aniversário da minha mãe foi absolutamente perfeita. Ela chorou quando ouviu!"
+                </p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
+                        <span class="text-pink-300 font-bold">SM</span>
+                    </div>
+                    <div>
+                        <p class="font-bold">Sofia M.</p>
+                        <p class="text-sm text-gray-500">Presente de Aniversário</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-8 relative">
+                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <p class="text-lg italic mb-6 relative z-10">
+                    "A música foi o destaque do nosso jantar de aniversário de casamento. Meu marido não conseguia acreditar que eu tinha transformado nossa história em uma linda canção."
+                </p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
+                        <span class="text-pink-300 font-bold">EJ</span>
+                    </div>
+                    <div>
+                        <p class="font-bold">Eduardo J.</p>
+                        <p class="text-sm text-gray-500">Presente de Aniversário</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-8 relative">
+                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <p class="text-lg italic mb-6 relative z-10">
+                    "Eu pedi em casamento com uma música personalizada e foi mágico! As letras capturaram nosso relacionamento perfeitamente e tornaram o momento inesquecível."
+                </p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
+                        <span class="text-pink-300 font-bold">MR</span>
+                    </div>
+                    <div>
+                        <p class="font-bold">Mariana R.</p>
+                        <p class="text-sm text-gray-500">Pedido de Casamento</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- Seção Como Funciona -->
@@ -316,55 +438,6 @@
     </div>
 </section>
 
-<!-- Seção Reação ao Presente -->
-<section id="examples" class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">
-            O Presente Mais <span class="gradient-text">Pessoal</span> Que Eles Nunca Vão Esquecer
-        </h2>
-        <p class="text-xl text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Reações reais de pessoas que receberam sua música personalizada.
-        </p>
-
-        <div class="flex flex-col md:flex-row items-center">
-            <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
-                <div class="rounded-2xl overflow-hidden card-shadow">
-                    <picture>
-                        <source srcset="images/depoimento.webp" type="image/webp">
-                        <img src="images/depoimento.jpg" alt="Pessoa feliz recebendo presente" width="800" height="534" loading="lazy" decoding="async" class="w-full h-auto object-cover">
-                    </picture>
-                </div>
-            </div>
-            <div class="md:w-1/2 md:pl-8">
-                <div class="bg-white p-8 rounded-2xl card-shadow">
-                    <div class="flex items-center mb-6">
-                        <div class="text-yellow-400 text-2xl mr-2">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <span class="font-medium">5.0 (128 avaliações)</span>
-                    </div>
-                    <blockquote class="text-xl italic text-gray-700 mb-6">
-                        "Dei uma música para minha esposa em nosso aniversário e ela chorou de felicidade. Foi o presente mais significativo que já dei."
-                    </blockquote>
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-                            <span class="text-pink-300 font-bold">JD</span>
-                        </div>
-                        <div>
-                            <p class="font-bold">João D.</p>
-                            <p class="text-sm text-gray-500">Presente de Aniversário</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Seção Perfeito para Qualquer Ocasião -->
 <section id="pricing" class="py-16">
     <div class="container mx-auto px-4">
@@ -406,71 +479,6 @@
                 </div>
                 <h3 class="text-xl font-bold mb-2">Apenas Porque</h3>
                 <p class="text-gray-600">Às vezes os melhores presentes são os inesperados que vêm do coração.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Seção Depoimentos -->
-<section id="testimonials" class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
-            O Que Nossos <span class="gradient-text">Clientes Dizem</span>
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-gray-50 rounded-2xl p-8 relative">
-                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
-                    <i class="fas fa-quote-left"></i>
-                </div>
-                <p class="text-lg italic mb-6 relative z-10">
-                    "Eu estava cético no início, mas a música que criaram para o 60º aniversário da minha mãe foi absolutamente perfeita. Ela chorou quando ouviu!"
-                </p>
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-                        <span class="text-pink-300 font-bold">SM</span>
-                    </div>
-                    <div>
-                        <p class="font-bold">Sofia M.</p>
-                        <p class="text-sm text-gray-500">Presente de Aniversário</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50 rounded-2xl p-8 relative">
-                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
-                    <i class="fas fa-quote-left"></i>
-                </div>
-                <p class="text-lg italic mb-6 relative z-10">
-                    "A música foi o destaque do nosso jantar de aniversário de casamento. Meu marido não conseguia acreditar que eu tinha transformado nossa história em uma linda canção."
-                </p>
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-                        <span class="text-pink-300 font-bold">EJ</span>
-                    </div>
-                    <div>
-                        <p class="font-bold">Eduardo J.</p>
-                        <p class="text-sm text-gray-500">Presente de Aniversário</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50 rounded-2xl p-8 relative">
-                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
-                    <i class="fas fa-quote-left"></i>
-                </div>
-                <p class="text-lg italic mb-6 relative z-10">
-                    "Eu pedi em casamento com uma música personalizada e foi mágico! As letras capturaram nosso relacionamento perfeitamente e tornaram o momento inesquecível."
-                </p>
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-                        <span class="text-pink-300 font-bold">MR</span>
-                    </div>
-                    <div>
-                        <p class="font-bold">Mariana R.</p>
-                        <p class="text-sm text-gray-500">Pedido de Casamento</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

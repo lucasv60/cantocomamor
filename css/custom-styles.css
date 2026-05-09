@@ -566,11 +566,21 @@ body {
 
 /* Refino do Glow */
 #createSongBtn {
-    box-shadow: 0 0 15px 3px rgba(246, 131, 179, 0.5);
+    box-shadow: 0 0 18px 4px rgba(246, 131, 179, 0.5);
 }
 
 #createSongBtn:hover {
-    box-shadow: 0 0 20px 5px rgba(246, 131, 179, 0.7);
+    box-shadow: 0 0 24px 6px rgba(246, 131, 179, 0.7);
+}
+
+/* Animação de fade ao trocar música no mockup */
+.mockup-fade {
+    animation: mockupFade 0.4s ease-in-out;
+}
+
+@keyframes mockupFade {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
 }
 
 /* ========================================

@@ -32,25 +32,5 @@ if ('requestIdleCallback' in window) {
     setTimeout(loadFbPixel, 1500);
 }
 
-// Função atualizada para Appmax
-async function handlePagamento() {
-    // ✅ Dispara evento AddPaymentInfo do Facebook Pixel
-    if (typeof fbq !== 'undefined') {
-        const prioritary = document.getElementById('prioritaryDelivery')?.checked || false;
-        const totalValue = window.currentBasePrice + (prioritary ? 19.90 : 0);
-
-        fbq('track', 'AddPaymentInfo', {
-            content_name: 'Checkout Música Personalizada',
-            content_category: 'music_purchase',
-            value: totalValue,
-            currency: 'BRL'
-        });
-    }
-
-    // Chama função de pagamento Appmax
-    await pagarAppmax();
-}
-
 // Exportar funções para uso global
-window.handlePagamento = handlePagamento;
 window.loadFbPixel = loadFbPixel;

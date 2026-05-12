@@ -9,7 +9,11 @@
 
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Inicializa Stripe apenas se a chave for válida (não placeholder)
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+const stripe = stripeKey && !stripeKey.includes('your_') && stripeKey.startsWith('sk_')
+    ? new Stripe(stripeKey)
+    : null;
 
 // Desativa o bodyParser para receber raw body (necessário para validação de assinatura)
 export const config = {
@@ -51,7 +55,7 @@ export default async function handler(req, res) {
         // Identifica a origem do webhook
         const stripeSignature = req.headers['stripe-signature'];
         
-        if (stripeSignature) {
+        if (stripeSignature && stripe) {
             // ===== WEBHOOK DO STRIPE =====
             return await handleStripeWebhook(req, res, stripeSignature, rawBody);
         } else {

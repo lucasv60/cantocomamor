@@ -31,26 +31,6 @@
     <!-- End Meta Pixel Code -->
     <meta name="facebook-domain-verification" content="m27y9ln9p31yzk862vfar527udvu2p">
     <script src="https://unpkg.com/imask" defer=""></script>
-    <script>
-        // Lazy-load reCAPTCHA on first user interaction (or after 4s idle).
-        // getCaptchaToken() em love-script.js já espera grecaptcha carregar.
-        (function () {
-            var loaded = false;
-            function loadRecaptcha() {
-                if (loaded) return;
-                loaded = true;
-                var s = document.createElement('script');
-                s.src = 'https://www.google.com/recaptcha/api.js?render=6LdTs5AsAAAAAOfcTmGMRhocyVn0Sdoy5Yz5zWXW';
-                s.async = true;
-                document.head.appendChild(s);
-            }
-            var events = ['mousemove', 'touchstart', 'scroll', 'keydown', 'click'];
-            events.forEach(function (e) {
-                window.addEventListener(e, loadRecaptcha, { once: true, passive: true });
-            });
-            setTimeout(loadRecaptcha, 4000);
-        })();
-    </script>
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/email.min.js" defer=""></script>
@@ -84,7 +64,6 @@
             <a href="#how-it-works" class="hover:text-pink-300">Como Funciona</a>
             <a href="#examples" class="hover:text-pink-300">Exemplos</a>
             <a href="#pricing" class="hover:text-pink-300">Ocasiões</a>
-            <a href="#testimonials" class="hover:text-pink-300">Depoimentos</a>
             <a href="./contato/" target="_blank" class="hover:text-pink-300">Localizar Musica</a>
         </div>
         <button class="md:hidden">
@@ -99,7 +78,6 @@
                     <a href="#how-it-works" class="hover:text-pink-300">Como Funciona</a>
                     <a href="#examples" class="hover:text-pink-300">Exemplos</a>
                     <a href="#pricing" class="hover:text-pink-300">Ocasiões</a>
-                    <a href="#testimonials" class="hover:text-pink-300">Depoimentos</a>
                     <a href="./contato/" class="hover:text-pink-300" target="_blank">Localizar Musica</a>
                 </nav>
             </div>
@@ -144,12 +122,12 @@
             </div>
 
             <!-- Conteúdo Direito - Spotify Player Funcional (Dito com Amor) -->
-            <div class="w-full flex justify-center relative -mt-4 mb-32 md:w-1/2" style="min-height: 600px; display: flex; justify-content: flex-start; align-items: center; padding-bottom: 3rem;">
+            <div class="w-full md:w-1/2 relative" style="min-height: 600px; padding-bottom: 3rem;">
                 <!-- Setas de Navegação Externas -->
-                <button onclick="musicaAnterior()" class="flex absolute top-1/2 left-4 -translate-y-1/2 bg-white/90 shadow-lg rounded-full w-12 h-12 items-center justify-center text-pink-500 hover:text-pink-600 hover:scale-110 hover:shadow-xl transition-all duration-200 z-30">
+                <button onclick="musicaAnterior()" class="flex absolute top-1/2 left-0 md:left-4 -translate-y-1/2 translate-x-0 bg-white/90 shadow-lg rounded-full w-12 h-12 items-center justify-center text-pink-500 hover:text-pink-600 hover:scale-110 hover:shadow-xl transition-all duration-200 z-30">
                     <i class="fas fa-chevron-left text-xl"></i>
                 </button>
-                <button onclick="proximaMusica()" class="flex absolute top-1/2 right-4 -translate-y-1/2 bg-white/90 shadow-lg rounded-full w-12 h-12 items-center justify-center text-pink-500 hover:text-pink-600 hover:scale-110 hover:shadow-xl transition-all duration-200 z-30">
+                <button onclick="proximaMusica()" class="flex absolute top-1/2 right-0 md:right-4 -translate-y-1/2 translate-x-0 bg-white/90 shadow-lg rounded-full w-12 h-12 items-center justify-center text-pink-500 hover:text-pink-600 hover:scale-110 hover:shadow-xl transition-all duration-200 z-30">
                     <i class="fas fa-chevron-right text-xl"></i>
                 </button>
                 <div id="smartphoneMockup" class="mx-auto relative -mt-8" style="width: 280px; height: 560px;">
@@ -226,9 +204,9 @@
                             </div>
 
                             <!-- Área de História (Lyrics Style) -->
-                            <div class="mt-4 bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-gray-100">
-                                <p class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-2">A História por trás da música</p>
-                                <p id="mockupStory" class="text-sm text-gray-600 italic leading-relaxed font-medium" style="font-family: 'Dancing Script', cursive; font-size: 16px;">
+                            <div class="mt-4 bg-white/90 backdrop-blur-sm rounded-2xl p-4 border border-gray-100 shadow-md">
+                                <p class="text-[10px] uppercase tracking-wider text-gray-600 font-bold mb-2">A História por trás da música</p>
+                                <p id="mockupStory" class="text-sm text-gray-900 italic leading-relaxed font-medium" style="font-family: 'Dancing Script', cursive; font-size: 16px;">
                                     'Quero que a música fale do nosso primeiro encontro na praia, do som das ondas e de como o beijo dela mudou minha vida...'
                                 </p>
                             </div>
@@ -263,20 +241,20 @@
 <!-- Seção Reação ao Presente -->
 <section id="examples" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
-        <div class="max-w-sm md:max-w-xl mx-auto bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+        <div id="testimonialCard" class="avaliacao-card testimonial-card max-w-sm md:max-w-xl mx-auto p-2 text-center transition-opacity duration-500 ease-in-out">
             <!-- Foto Circular -->
-            <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg mx-auto mb-6">
+            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-pink-500 mx-auto mb-2">
                 <picture>
                     <source srcset="images/depoimento.webp" type="image/webp">
-                    <img src="images/depoimento.jpg" alt="João D." width="800" height="534" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                    <img id="testimonialPhoto" src="images/depoimento.jpg" alt="João D." width="800" height="534" loading="lazy" decoding="async" class="avaliacao-foto w-full h-full object-cover">
                 </picture>
             </div>
             
             <!-- Nome -->
-            <p class="font-bold text-xl text-gray-800 mb-2">João D.</p>
+            <p id="testimonialName" class="avaliacao-nome font-bold text-base text-gray-800 mb-2">João D.</p>
             
             <!-- Estrelas -->
-            <div class="flex justify-center gap-1 text-pink-500 text-xl mb-6">
+            <div id="testimonialStars" class="avaliacao-stars flex justify-center gap-1 text-pink-500 text-sm mb-2">
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star"></i>
@@ -285,77 +263,12 @@
             </div>
             
             <!-- Depoimento -->
-            <blockquote class="text-lg md:text-xl italic text-gray-600 leading-relaxed mb-6">
+            <blockquote id="testimonialText" class="avaliacao-texto testimonial-text text-sm italic text-gray-600 leading-relaxed mb-2">
                 "Dei uma música para minha esposa em nosso aniversário e ela chorou de felicidade. Foi o presente mais significativo que já dei."
             </blockquote>
             
             <!-- Legenda -->
-            <p class="text-sm text-gray-400">Presente de Aniversário</p>
-        </div>
-    </div>
-</section>
-
-<!-- Seção Depoimentos -->
-<section id="testimonials" class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
-            O Que Nossos <span class="gradient-text">Clientes Dizem</span>
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-gray-50 rounded-2xl p-8 relative">
-                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
-                    <i class="fas fa-quote-left"></i>
-                </div>
-                <p class="text-lg italic mb-6 relative z-10">
-                    "Eu estava cético no início, mas a música que criaram para o 60º aniversário da minha mãe foi absolutamente perfeita. Ela chorou quando ouviu!"
-                </p>
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-                        <span class="text-pink-300 font-bold">SM</span>
-                    </div>
-                    <div>
-                        <p class="font-bold">Sofia M.</p>
-                        <p class="text-sm text-gray-500">Presente de Aniversário</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50 rounded-2xl p-8 relative">
-                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
-                    <i class="fas fa-quote-left"></i>
-                </div>
-                <p class="text-lg italic mb-6 relative z-10">
-                    "A música foi o destaque do nosso jantar de aniversário de casamento. Meu marido não conseguia acreditar que eu tinha transformado nossa história em uma linda canção."
-                </p>
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-                        <span class="text-pink-300 font-bold">EJ</span>
-                    </div>
-                    <div>
-                        <p class="font-bold">Eduardo J.</p>
-                        <p class="text-sm text-gray-500">Presente de Aniversário</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50 rounded-2xl p-8 relative">
-                <div class="text-pink-200 text-4xl absolute top-4 left-4 opacity-20">
-                    <i class="fas fa-quote-left"></i>
-                </div>
-                <p class="text-lg italic mb-6 relative z-10">
-                    "Eu pedi em casamento com uma música personalizada e foi mágico! As letras capturaram nosso relacionamento perfeitamente e tornaram o momento inesquecível."
-                </p>
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
-                        <span class="text-pink-300 font-bold">MR</span>
-                    </div>
-                    <div>
-                        <p class="font-bold">Mariana R.</p>
-                        <p class="text-sm text-gray-500">Pedido de Casamento</p>
-                    </div>
-                </div>
-            </div>
+            <p id="testimonialOccasion" class="avaliacao-ocasiao text-sm text-gray-400">Presente de Aniversário</p>
         </div>
     </div>
 </section>
@@ -367,36 +280,36 @@
             Como Sua <span class="gradient-text">Música Personalizada</span> é Criada
         </h2>
 
-        <div class="flex flex-col lg:flex-row justify-between items-center lg:items-start">
+        <div class="flex flex-col lg:flex-row justify-between items-start">
             <!-- Seção A -->
             <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-8">
-                <div class="flex items-start mb-8">
-                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                <div class="grid grid-cols-[48px_1fr] gap-x-4 items-start mb-10">
+                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center">
                         <span class="text-pink-300 font-bold text-xl">1</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-2">Conte-nos sobre a pessoa e a ocasião</h3>
-                        <p class="text-gray-600">Compartilhe detalhes sobre quem é a música e o que torna seu relacionamento special.</p>
+                        <h3 class="text-lg font-bold mb-1 leading-tight">Conte-nos sobre a pessoa e a ocasião</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Compartilhe detalhes sobre quem é a música e o que torna seu relacionamento special.</p>
                     </div>
                 </div>
 
-                <div class="flex items-start mb-8">
-                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                <div class="grid grid-cols-[48px_1fr] gap-x-4 items-start mb-10">
+                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center">
                         <span class="text-pink-300 font-bold text-xl">2</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-2">Escolha um estilo musical e clima</h3>
-                        <p class="text-gray-600">Criamos em mais de 30 tipos de generos musicais, escolha o desejado no formulario.</p>
+                        <h3 class="text-lg font-bold mb-1 leading-tight">Escolha um estilo musical e clima</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Criamos em mais de 30 tipos de generos musicais, escolha o desejado no formulario.</p>
                     </div>
                 </div>
 
-                <div class="flex items-start">
-                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                <div class="grid grid-cols-[48px_1fr] gap-x-4 items-start">
+                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center">
                         <span class="text-pink-300 font-bold text-xl">3</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-2">Nós escrevemos letras e melodia personalizadas</h3>
-                        <p class="text-gray-600">Nós criamos sua letras que contam sua história única.</p>
+                        <h3 class="text-lg font-bold mb-1 leading-tight">Nós escrevemos letras e melodia personalizadas</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Nós criamos sua letras que contam sua história única.</p>
                     </div>
                 </div>
             </div>
@@ -408,23 +321,23 @@
 
             <!-- Seção B -->
             <div class="lg:w-1/2 lg:pl-8">
-                <div class="flex items-start mb-8">
-                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                <div class="grid grid-cols-[48px_1fr] gap-x-4 items-start mb-10">
+                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center">
                         <span class="text-pink-300 font-bold text-xl">4</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-2">Gravamos profissionalmente</h3>
-                        <p class="text-gray-600">Após ter a letra aprovado por você, músicos e vocalistas talentosos dão vida à sua música em nosso estúdio.</p>
+                        <h3 class="text-lg font-bold mb-1 leading-tight">Gravamos profissionalmente</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Após ter a letra aprovado por você, músicos e vocalistas talentosos dão vida à sua música em nosso estúdio.</p>
                     </div>
                 </div>
 
-                <div class="flex items-start">
-                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                <div class="grid grid-cols-[48px_1fr] gap-x-4 items-start">
+                    <div class="bg-pink-100 rounded-full w-12 h-12 flex items-center justify-center">
                         <span class="text-pink-300 font-bold text-xl">5</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold mb-2">Você recebe sua música única e se aprovado</h3>
-                        <p class="text-gray-600">Receba sua gravação em alta qualidade no seu email e no whatsapp pronta para surpreender alguém especial.</p>
+                        <h3 class="text-lg font-bold mb-1 leading-tight">Você recebe sua música única e se aprovado</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Receba sua gravação em alta qualidade no seu email e no whatsapp pronta para surpreender alguém especial.</p>
                     </div>
                 </div>
             </div>
@@ -488,7 +401,7 @@
 <section class="py-16 gradient-bg text-white">
     <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-6">
-            Pronto para Criar uma Música Que Vai <span class="handwritten">Tocar o Coração</span> Deles?
+            Pronto para Criar uma Música Que Vai Tocar o Coração Deles?
         </h2>
         <p class="text-xl mb-8 max-w-2xl mx-auto">
             Comece sua música personalizada hoje e dê um presente que eles vão guardar para sempre.
@@ -505,8 +418,8 @@
         <div class="flex flex-col md:flex-row justify-between">
             <div class="mb-8 md:mb-0">
                 <div class="flex items-center mb-4">
-                    <i class="fas fa-music text-3xl gradient-text mr-2"></i>
-                    <span class="text-2xl font-bold">MonteSua<span class="gradient-text">Musica</span></span>
+                    <i class="fas fa-music text-3xl text-black mr-2"></i>
+                    <span class="text-2xl font-bold text-black">Canto com Amor</span>
                 </div>
                 <p style="color: #4A4A4A;" class="max-w-xs">
                     Transformando suas histórias e sentimentos em belas músicas personalizadas desde 2018.
@@ -517,51 +430,29 @@
                 <div>
                     <h3 style="color: #4A4A4A;" class="text-lg font-bold mb-4">Empresa</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" style="color: #4A4A4A;">Sobre Nós</a></li>
-                        <li><a href="#" style="color: #4A4A4A;">Como Funciona</a></li>
-                        <li><a href="./contato/" target="_blank" style="color: #4A4A4A;">Contato</a></li>
-                        <li><a href="#" style="color: #4A4A4A;">Depoimentos</a></li>
+                        <li style="color: #4A4A4A; cursor: default;">Sobre Nós</li>
+                        <li style="color: #4A4A4A; cursor: default;">Como Funciona</li>
+                        <li style="color: #4A4A4A; cursor: default;">Contato</li>
+                        <li style="color: #4A4A4A; cursor: default;">Depoimentos</li>
                     </ul>
                 </div>
 
                 <div>
                     <h3 style="color: #4A4A4A;" class="text-lg font-bold mb-4">Suporte</h3>
                     <ul class="space-y-2">
-                        <li><a href="./faq/" style="color: #4A4A4A;">FAQ</a></li>
-                        <li><a href="./contato/" target="_blank" style="color: #4A4A4A;">Contato</a></li>
-                        <li><a href="./politicas_de_privacidade/" style="color: #4A4A4A;">Política de Privacidade</a></li>
-                        <li><a href="./termos_de_servico/" style="color: #4A4A4A;">Termos de Serviço</a></li>
+                        <li style="color: #4A4A4A; cursor: default;">FAQ</li>
+                        <li style="color: #4A4A4A; cursor: default;">Contato</li>
+                        <li style="color: #4A4A4A; cursor: default;">Política de Privacidade</li>
+                        <li style="color: #4A4A4A; cursor: default;">Termos de Serviço</li>
                     </ul>
                 </div>
-
-                <div style="display:none;">
-                    <h3 class="text-lg font-bold mb-4">Conecte-se</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition duration-300" style="background-color: #F4C2C2;">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
-                </div>
             </div>
+
         </div>
 
-        <div class="border-t mt-12 pt-8 text-center" style="border-color: #F4C2C2; color: #4A4A4A;">
-            <p>© 2025 Canto com Amor. Todos os direitos reservados.</p>
-        </div>
-
-        <div class="mt-8 text-sm text-center space-y-2" style="color: #4A4A4A;">
-            <p>
-                Este site é protegido por reCAPTCHA e está sujeito à <a href="https://policies.google.com/privacy" target="_blank" class="underline" style="color: #4A4A4A;">Política de Privacidade</a> e aos <a href="https://policies.google.com/terms" target="_blank" class="underline" style="color: #4A4A4A;">Termos de Serviço</a> do Google.
-            </p>
-            <p>
-                CNPJ: 64.778.496/0001-01 - L&L Tech Studio
-            </p>
-            <p>
-                Dúvidas? <a href="./contato/" target="_blank" class="underline" style="color: #4A4A4A;">Fale com nosso suporte</a>  |  E-mail: <a href="/cdn-cgi/l/email-protection#275452575748555367544849405441485540420944484a" class="underline" style="color: #4A4A4A;"><span class="__cf_email__" data-cfemail="99eaece9e9f6ebedd9eaf6f7feeafff6ebfefcb7faf6f4">[email protected]</span></a>
-            </p>
-            <p>
-                © 2025 Canto com Amor. Todos os direitos reservados.
-            </p>
+        <div class="border-t mt-12 pt-8 text-center space-y-2" style="border-color: #F4C2C2; color: #4A4A4A;">
+            <p>CNPJ: 64.778.496/0001-01 - L&L Tech Studio</p>
+            <p>© 2026 Canto com Amor. Todos os direitos reservados.</p>
         </div>
 
 

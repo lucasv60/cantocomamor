@@ -1330,7 +1330,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const songAudio = document.getElementById('songAudio');
     const audioWave = document.getElementById('audioWave');
     let currentIndex = 0;
-    let isPlaying = false;
+    let isExamplePlaying = false;
 
     // Mapeamento de gêneros para arquivos de áudio
     const genreAudios = {
@@ -1342,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function toggleMusic() {
-        if (isPlaying) {
+        if (isExamplePlaying) {
             // Pausar a música
             songAudio.pause();
             playIcon.classList.remove('fa-pause');
@@ -1357,13 +1357,13 @@ document.addEventListener('DOMContentLoaded', function() {
             playButton.classList.add('active');
             audioWave.classList.add('playing');
         }
-        isPlaying = !isPlaying;
+        isExamplePlaying = !isExamplePlaying;
     }
 
     function showSlide(index) {
         console.log('show slide', index)
         // Pausa a música se estiver tocando
-        if (isPlaying) {
+        if (isExamplePlaying) {
             toggleMusic();
         }
 
@@ -1406,7 +1406,7 @@ document.addEventListener('DOMContentLoaded', function() {
             playIcon?.classList.add('fa-play');
             playButton?.classList.remove('active');
             audioWave?.classList.remove('playing');
-            isPlaying = false;
+            isExamplePlaying = false;
         });
     }
 
@@ -1690,3 +1690,127 @@ function openMainModal() {
         });
     }
 })();
+
+// =============================================
+// TESTIMONIAL CAROUSEL - Seção #examples
+// =============================================
+document.addEventListener('DOMContentLoaded', function() {
+    const testimonials = [
+        {
+            name: 'João D.',
+            photo: 'images/depoimento.jpg',
+            photoWebp: 'images/depoimento.webp',
+            stars: 5,
+            text: 'Dei uma música para minha esposa em nosso aniversário e ela chorou de felicidade. Foi o presente mais significativo que já dei.',
+            occasion: 'Presente de Aniversário'
+        },
+        {
+            name: 'Mariana R.',
+            photo: 'images/depoimento.jpg',
+            photoWebp: 'images/depoimento.webp',
+            stars: 5,
+            text: 'Eu pedi em casamento com uma música personalizada e foi mágico! As letras capturaram nosso relacionamento perfeitamente e tornaram o momento inesquecível.',
+            occasion: 'Pedido de Casamento'
+        },
+        {
+            name: 'Carlos S.',
+            photo: 'images/depoimento.jpg',
+            photoWebp: 'images/depoimento.webp',
+            stars: 5,
+            text: 'Presenteei minha mãe no Dia das Mães com uma música só dela. Ela não parou de chorar e disse que foi o melhor presente que já recebeu na vida.',
+            occasion: 'Dia das Mães'
+        },
+        {
+            name: 'Fernanda L.',
+            photo: 'images/depoimento.jpg',
+            photoWebp: 'images/depoimento.webp',
+            stars: 5,
+            text: 'Fiz uma surpresa para meu namorado com uma música que conta nossa história. Ele ficou emocionado e agora toda vez que ouve, lembra daquele momento.',
+            occasion: 'Surpresa Romântica'
+        },
+        {
+            name: 'Roberto M.',
+            photo: 'images/depoimento.jpg',
+            photoWebp: 'images/depoimento.webp',
+            stars: 5,
+            text: 'Encomendei uma música para o aniversário de 50 anos do meu pai. Toda a família se emocionou. Valeu cada centavo investido.',
+            occasion: 'Aniversário de 50 Anos'
+        }
+    ];
+
+    let currentIndex = 0;
+    let carouselInterval = null;
+    const INTERVAL_MS = 6000;
+
+    const card = document.querySelector('#examples .avaliacao-card');
+    if (!card) {
+        console.warn('[Carrossel] Card não encontrado em #examples .avaliacao-card');
+        return;
+    }
+
+    const nameEl = card.querySelector('.avaliacao-nome');
+    const photoEl = card.querySelector('.avaliacao-foto');
+    const starsEl = card.querySelector('.avaliacao-stars');
+    const textEl = card.querySelector('.avaliacao-texto');
+    const occasionEl = card.querySelector('.avaliacao-ocasiao');
+
+    function renderStars(count) {
+        let html = '';
+        for (let i = 0; i < 5; i++) {
+            html += '<i class="fas fa-star"></i>';
+        }
+        return html;
+    }
+
+    function showTestimonial(index) {
+        const t = testimonials[index];
+        nameEl.textContent = t.name;
+        photoEl.src = t.photo;
+        photoEl.alt = t.name;
+        starsEl.innerHTML = renderStars(t.stars);
+        textEl.textContent = '"' + t.text + '"';
+        occasionEl.textContent = t.occasion;
+    }
+
+    function fadeToNext() {
+        // Fade Out
+        card.classList.add('opacity-0');
+        card.classList.remove('opacity-100');
+
+        setTimeout(function() {
+            // Swap content
+            currentIndex = (currentIndex + 1) % testimonials.length;
+            showTestimonial(currentIndex);
+
+            // Fade In
+            card.classList.remove('opacity-0');
+            card.classList.add('opacity-100');
+        }, 500);
+    }
+
+    function startCarousel() {
+        if (carouselInterval) return;
+        carouselInterval = setInterval(fadeToNext, INTERVAL_MS);
+    }
+
+    function stopCarousel() {
+        if (carouselInterval) {
+            clearInterval(carouselInterval);
+            carouselInterval = null;
+        }
+    }
+
+    // Pausa ao passar o mouse
+    card.addEventListener('mouseenter', stopCarousel);
+    card.addEventListener('mouseleave', startCarousel);
+
+    // Pausa ao tocar (mobile)
+    card.addEventListener('touchstart', stopCarousel, { passive: true });
+    card.addEventListener('touchend', function() {
+        setTimeout(startCarousel, 1000);
+    }, { passive: true });
+
+    // Inicia o carrossel
+    startCarousel();
+    console.log('✅ Carrossel de Depoimentos Ativado');
+});

@@ -39,7 +39,7 @@ const musicas = [
 ];
 
 let musicaAtual = 0;
-let isPlaying = false;
+let isSpotifyPlaying = false;
 let progressInterval = null;
 let currentProgress = 0;
 
@@ -49,9 +49,9 @@ function togglePlay() {
     const frame = document.getElementById('youtubeFrame');
     const atual = musicas[musicaAtual];
     
-    isPlaying = !isPlaying;
+    isSpotifyPlaying = !isSpotifyPlaying;
     
-    if (isPlaying) {
+    if (isSpotifyPlaying) {
         icon.className = 'fas fa-pause text-white text-2xl';
         // Controle do YouTube via postMessage
         if (atual.youtubeId) {
@@ -97,7 +97,7 @@ function updateMockup(data) {
     // Reset
     currentProgress = 0;
     updateProgress(0);
-    if (isPlaying) togglePlay();
+    if (isSpotifyPlaying) togglePlay();
 
     setTimeout(() => {
         if (card) card.classList.remove('mockup-fade');

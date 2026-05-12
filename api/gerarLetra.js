@@ -33,6 +33,13 @@ export default async function handler(req, res) {
             captchaToken
         } = req.body;
 
+        // Validação de segurança - história/mensagem
+        if (!mensagem || mensagem.trim().length < 10) {
+            return res.status(400).json({
+                error: 'A história da música é muito curta ou não foi fornecida.'
+            });
+        }
+
         // Validação básica
         if (!destinatario || !estilo) {
             return res.status(400).json({
@@ -113,7 +120,7 @@ Ocasião: ${ocasiao}.
 Gênero Musical: ${estilo}.
 
 ### HISTÓRIA E DETALHES (USE ISSO PARA PERSONALIZAR):
-${historia}
+${mensagem}
 
 ### DIRETRIZES DE COMPOSIÇÃO:
 1. **Storytelling:** Não apenas cite os fatos, transforme-os em versos. Se a história menciona um café, transforme isso em uma metáfora de aconchego.
@@ -135,6 +142,10 @@ Retorne um objeto JSON com o seguinte formato:
   "titulo": "Título Criativo da Música",
   "letra": "A letra completa aqui, usando (Verso), (Refrão), (Ponte) para separar as seções."
 }`;
+
+        // Log para rastreamento
+        console.log('[gerarLetra] Gerando para:', destinatario);
+
         // Chama a API do OpenAI
         const completion = await openai.chat.completions.create({
             model: 'gpt-4o-mini',

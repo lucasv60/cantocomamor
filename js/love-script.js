@@ -1213,7 +1213,7 @@ link.href = canvas.toDataURL();
     };
 
     const PRIORITARY_FEE = 19.90;
-    const fmt = n => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const fmt = n => (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     // Preço base a partir do ?p=
     function normalizePriceKeyFromURL() {

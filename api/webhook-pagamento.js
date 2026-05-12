@@ -43,6 +43,13 @@ async function supabaseRequest(endpoint, method, body) {
         },
         body: body ? JSON.stringify(body) : undefined
     });
+    
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[webhook-pagamento] Erro Supabase:', response.status, errorText);
+        throw new Error(`Supabase retornou ${response.status}: ${errorText}`);
+    }
+    
     return response.json();
 }
 
@@ -140,17 +147,20 @@ async function handleAsaasWebhook(req, res, rawBody) {
 
         if (leadId) {
             // Atualiza o lead no Supabase
-            await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}`, 'PATCH', {
-                status: 'paid',
-                status_pagamento: 'pago',
-                payment_id: payment.id,
-                gateway: 'asaas',
-                gateway_payment_id: payment.id,
-                valor_pago: payment.value,
-                atualizado_em: new Date().toISOString()
-            });
-
-            console.log('[webhook-pagamento] Asaas - Lead atualizado:', leadId);
+            try {
+                const result = await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}`, 'PATCH', {
+                    status: 'paid',
+                    status_pagamento: 'pago',
+                    payment_id: payment.id,
+                    gateway: 'asaas',
+                    gateway_payment_id: payment.id,
+                    valor_pago: payment.value,
+                    atualizado_em: new Date().toISOString()
+                });
+                console.log('[webhook-pagamento] Asaas - Lead atualizado:', leadId, JSON.stringify(result));
+            } catch (err) {
+                console.error('[webhook-pagamento] Erro ao atualizar lead:', leadId, err.message);
+            }
         }
     }
 

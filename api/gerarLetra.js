@@ -156,7 +156,7 @@ Retorne um objeto JSON com o seguinte formato:
                 },
                 {
                     role: 'user',
-                    content: prompt
+                    content: userPrompt
                 }
             ],
             temperature: 0.8,

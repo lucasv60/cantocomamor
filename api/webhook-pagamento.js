@@ -24,13 +24,21 @@ export const config = {
 
 // Cliente Supabase via fetch (sem dependência adicional)
 async function supabaseRequest(endpoint, method, body) {
-    const url = `${process.env.SUPABASE_URL}${endpoint}`;
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+        console.error('[webhook-pagamento] SUPABASE_URL ou SUPABASE_ANON_KEY não configurados');
+        throw new Error('Configuração do Supabase incompleta');
+    }
+    
+    const url = `${supabaseUrl}${endpoint}`;
     const response = await fetch(url, {
         method,
         headers: {
             'Content-Type': 'application/json',
-            'apikey': process.env.SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
             'Prefer': 'return=representation'
         },
         body: body ? JSON.stringify(body) : undefined
@@ -130,7 +138,9 @@ async function handleAsaasWebhook(req, res, rawBody) {
         if (leadId) {
             // Atualiza o lead no Supabase
             await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}`, 'PATCH', {
+                status: 'paid',
                 status_pagamento: 'pago',
+                payment_id: payment.id,
                 gateway: 'asaas',
                 gateway_payment_id: payment.id,
                 valor_pago: payment.value,

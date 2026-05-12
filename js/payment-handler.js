@@ -317,10 +317,31 @@ function iniciarVerificacaoPagamento(paymentId) {
         attempts++;
 
         try {
-            const response = await fetch(`/api/webhook-pagamento?paymentId=${paymentId}`);
-            const data = await response.json();
+            // Usa o SDK do Supabase para verificar o status do lead
+            const supabaseClient = window.API_CONFIG?.supabaseClient;
+            if (!supabaseClient) {
+                console.warn('[payment] Supabase não configurado para verificação');
+                return;
+            }
 
-            if (data.pago) {
+            // Busca o lead pelo currentLeadId
+            if (!window.currentLeadId) {
+                console.warn('[payment] currentLeadId não disponível');
+                return;
+            }
+
+            const { data, error } = await supabaseClient
+                .from('leads')
+                .select('status')
+                .eq('id', window.currentLeadId)
+                .single();
+
+            if (error) {
+                console.error('[payment] Erro ao verificar status:', error);
+                return;
+            }
+
+            if (data?.status === 'paid') {
                 clearInterval(interval);
                 window.location.href = '/sucesso.html';
             }

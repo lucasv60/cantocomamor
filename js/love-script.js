@@ -84,6 +84,7 @@ async function saveLead() {
         }
 
         console.log('[LEAD] Salvo com sucesso:', data[0]?.id);
+        window.currentLeadId = data[0]?.id;
         return data[0];
     } catch (err) {
         console.error('[LEAD] Erro inesperado:', err);
@@ -753,8 +754,9 @@ document.addEventListener('DOMContentLoaded', function() {
             titleEl.textContent = data.titulo;
             if (lyricsArea) lyricsArea.value = data.letra;
 
-            window.generatedLyric     = data.letra;
-            window.lastGeneratedLyric = data.letra;
+            window.generatedTitle      = data.titulo;
+            window.generatedLyric      = data.letra;
+            window.lastGeneratedLyric  = data.letra;
 
 
 
@@ -786,8 +788,28 @@ Você pode continuar para o pagamento agora — você terá direito a revisar su
 });
 
 
+// Função para atualizar lead com dados gerados
+async function updateLeadData() {
+    if (!window.currentLeadId) return;
+    const supabaseClient = window.API_CONFIG?.supabaseClient;
+    if (!supabaseClient) return;
+    const feedback = document.getElementById('lyricFeedback')?.value || '';
+    const { error } = await supabaseClient
+        .from('leads')
+        .update({
+            titulo: window.generatedTitle || '',
+            letra_gerada: window.generatedLyric || '',
+            alteracoes_usuario: feedback
+        })
+        .eq('id', window.currentLeadId);
+    if (error) console.error('[LEAD] Erro ao atualizar:', error);
+    else console.log('[LEAD] Atualizado com sucesso');
+}
+
 // Substitua a função existente por esta versão unificada (sem parâmetros)
-function goToStep3() {
+async function goToStep3() {
+    // Atualiza lead no Supabase antes de avançar
+    await updateLeadData();
     const step1Content = document.getElementById('step1Content');
     const step2Content = document.getElementById('step2Content');
     const step3Content = document.getElementById('step3Content');

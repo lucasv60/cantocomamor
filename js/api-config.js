@@ -33,11 +33,14 @@
         // Configurações do site
         getConfig: '/api/get-config',
         
-        // Appmax - Criar checkout
-        criarCheckoutAppmax: '/api/criarCheckoutAppmax',
+        // Stripe - Checkout para cartão de crédito
+        stripeCheckout: '/api/stripe-checkout',
         
-        // Appmax - Verificar status do pagamento
-        verificarPagamentoAppmax: '/api/verificarPagamentoAppmax'
+        // Asaas - Gerar PIX
+        asaasPix: '/api/asaas-pix',
+        
+        // Webhook - Confirmação de pagamento
+        webhookPagamento: '/api/webhook-pagamento'
     };
 
     // ========================================

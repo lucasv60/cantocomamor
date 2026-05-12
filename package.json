@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "nodemailer": "^8.0.7",
-    "openai": "^6.36.0"
+    "openai": "^6.36.0",
+    "stripe": "^14.0.0"
   }
 }

@@ -568,8 +568,8 @@ async function pagarAppmax() {
         // Obter token reCAPTCHA
         formData.captchaToken = await getCaptchaToken('checkout');
 
-        // Chamar função Netlify
-        const response = await fetch('/.netlify/functions/criarCheckoutAppmax', {
+        // Chamar API de pagamento
+        const response = await fetch('/api/asaas-pix', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
@@ -677,8 +677,8 @@ function iniciarVerificacaoPix(orderId) {
             return;
         }
 
-        try {//
-            const response = await fetch(`/.netlify/functions/verificarPagamentoAppmax?orderId=${orderId}`);
+        try {
+            const response = await fetch(`/api/webhook-pagamento?orderId=${orderId}`);
             const data = await response.json();
 
             if (data.status === 'approved' || data.status === 'paid') {
@@ -934,7 +934,7 @@ function iniciarVerificacaoCartao(orderId, email, originalData) {
         try {
             console.log(`[CARD CHECK] Verificando... (tentativa ${tentativas})`);
 
-            const response = await fetch(`/.netlify/functions/verificarPagamentoAppmax?orderId=${orderId}`);
+            const response = await fetch(`/api/webhook-pagamento?orderId=${orderId}`);
             const data = await response.json();
 
             console.log('[CARD CHECK] Resposta:', data);

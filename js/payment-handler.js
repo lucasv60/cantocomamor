@@ -14,19 +14,22 @@ window.PIX_DISCOUNT_PERCENT = 5;
 // ========================================
 // ATUALIZAR PREÇOS COM DESCONTO PIX
 // ========================================
+// Constante de taxa prioritária (sincronizada com love-script.js)
+const PRIORITARY_FEE = 19.90;
+
 function updatePricesWithPixDiscount() {
     const isPix = window.selectedPaymentMethod === 'pix';
     const prioritaryChecked = document.getElementById('prioritaryDelivery')?.checked || false;
-    const basePrice = window.currentBasePrice || 5; // TEMP: Fallback para R$ 5,00
-    const prioritaryFee = 0; // TEMP: Zerado para teste
+    const basePrice = Number(window.currentBasePrice) || 5;
+    const prioritaryFee = prioritaryChecked ? PRIORITARY_FEE : 0;
     const subtotal = basePrice + prioritaryFee;
 
-    // TEMP: Desconto PIX desativado para teste de R$ 1,00
-    const pixDiscount = 0;
-    const totalFinal = subtotal - pixDiscount;
+    // Desconto PIX (5% se PIX, 0% para outros métodos)
+    const pixDiscount = isPix ? Math.round(subtotal * (window.PIX_DISCOUNT_PERCENT / 100) * 100) / 100 : 0;
+    const totalFinal = Math.max(subtotal - pixDiscount, 0);
 
-    // Salva para uso no pagamento
-    window.currentTotalWithDiscount = totalFinal;
+    // Salva para uso no pagamento (garante que é Number)
+    window.currentTotalWithDiscount = Number(totalFinal.toFixed(2));
 
     // Formata valores
     const fmt = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;

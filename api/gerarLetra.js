@@ -34,9 +34,9 @@ export default async function handler(req, res) {
         } = req.body;
 
         // Validação de segurança - história/mensagem
-        if (!mensagem || mensagem.trim().length < 10) {
+        if (!mensagem || mensagem.trim().length === 0) {
             return res.status(400).json({
-                error: 'A história da música é muito curta ou não foi fornecida.'
+                error: 'A história da música não foi fornecida.'
             });
         }
 

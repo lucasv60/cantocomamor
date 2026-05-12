@@ -841,12 +841,9 @@ async function goToStep3() {
     }
 
     // Scroll para o topo do form
-    const promoBanner = document.getElementById('promoJaneiro');
     const promoBarTop = document.getElementById('promoBarTop');
     const step3FormCard = document.getElementById('step3Content')?.closest('.form-card');
-    if (promoBanner) {
-        promoBanner.scrollIntoView({ behavior: 'instant', block: 'start' });
-    } else if (promoBarTop) {
+    if (promoBarTop) {
         promoBarTop.scrollIntoView({ behavior: 'instant', block: 'start' });
     } else if (step3FormCard) {
         step3FormCard.scrollIntoView({ behavior: 'instant', block: 'start' });
@@ -930,7 +927,54 @@ const REQUIRED = [
     { id: 'message',         errorId: 'messageError',        validate: v => v.trim().length > 0 }
 ];
 
-// limpa erro ao digitar/trocar (sem scroll automático)
+// ====== VERIFICAÇÃO EM TEMPO REAL DO FORMULÁRIO ======
+function checkFormCompletion() {
+    const nextBtn = document.getElementById('nextStepBtn');
+    if (!nextBtn) return;
+
+    const step1 = document.getElementById('step1Content');
+    let allValid = true;
+
+    REQUIRED.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el) return;
+        // Verifica apenas campos visíveis no Step 1
+        if (step1 && !step1.contains(el)) return;
+
+        const value = (el.value || '').trim();
+        const valid = f.validate ? f.validate(value) : !!value;
+        if (!valid) allValid = false;
+    });
+
+    if (allValid) {
+        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        nextBtn.classList.add('opacity-100', 'btn-destaque');
+        nextBtn.disabled = false;
+    } else {
+        nextBtn.classList.remove('opacity-100', 'btn-destaque');
+        nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        nextBtn.disabled = false; // mantém clicável para mostrar erros
+    }
+}
+
+// Verificação em tempo real para Step 2 (botão Continuar)
+function checkStep2Completion() {
+    const goToPaymentBtn = document.getElementById('goToPaymentBtn');
+    if (!goToPaymentBtn) return;
+
+    const lyricsArea = document.getElementById('generatedLyrics');
+    const hasLyrics = lyricsArea && lyricsArea.value.trim().length > 0;
+
+    if (hasLyrics) {
+        goToPaymentBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        goToPaymentBtn.classList.add('opacity-100', 'btn-destaque');
+    } else {
+        goToPaymentBtn.classList.remove('opacity-100', 'btn-destaque');
+        goToPaymentBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+}
+
+// limpa erro ao digitar/trocar (sem scroll automático) + verificação em tempo real
 REQUIRED.forEach(f => {
     const el = document.getElementById(f.id);
     const err = document.getElementById(f.errorId);
@@ -939,9 +983,25 @@ REQUIRED.forEach(f => {
         e.stopPropagation(); // evita propagação
         el.classList.remove('error-border', 'shake');
         err.classList.add('hidden');
+        // Verifica preenchimento em tempo real
+        checkFormCompletion();
     };
     el.addEventListener('input', clear, { passive: true });
     el.addEventListener('change', clear, { passive: true });
+});
+
+// Listener para o campo de letras geradas (Step 2)
+const generatedLyricsEl = document.getElementById('generatedLyrics');
+if (generatedLyricsEl) {
+    generatedLyricsEl.addEventListener('input', () => {
+        checkStep2Completion();
+    });
+}
+
+// Inicializa estado dos botões ao carregar
+document.addEventListener('DOMContentLoaded', () => {
+    checkFormCompletion();
+    checkStep2Completion();
 });
 
 function validateRequiredFields({scrollToFirst=true} = {}) {

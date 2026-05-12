@@ -26,6 +26,40 @@ body {
     background: linear-gradient(135deg, #F4C2C2 0%, #FFB7C5 100%);
 }
 
+/* Animação pulsante para botão ativo */
+@keyframes pulsante {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+    50% {
+        transform: scale(1.03);
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+    }
+}
+
+.btn-destaque {
+    animation: pulsante 2s infinite ease-in-out;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    transition: background-color 0.3s ease;
+}
+
+.btn-destaque:hover {
+    animation: pulsante 1s infinite ease-in-out;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+}
+
+/* Efeito de brilho suave para botões (mantido para compatibilidade) */
+.btn-glow {
+    box-shadow: 0 0 15px rgba(244, 194, 194, 0.6), 0 0 30px rgba(255, 183, 197, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+    box-shadow: 0 0 20px rgba(244, 194, 194, 0.8), 0 0 40px rgba(255, 183, 197, 0.5);
+    transform: translateY(-1px);
+}
+
 .gradient-text {
     background: linear-gradient(135deg, #F4C2C2 0%, #FFB7C5 100%);
     -webkit-background-clip: text;

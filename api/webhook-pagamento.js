@@ -130,25 +130,51 @@ async function handleAsaasWebhook(req, res, rawBody) {
         return res.status(400).json({ error: 'Body inválido' });
     }
 
+    // ===== VALIDAÇÃO DE TOKEN =====
+    const asaasToken = req.headers['asaas-access-token'];
+    const expectedToken = process.env.ASAAS_WEBHOOK_TOKEN;
+    
+    if (expectedToken && asaasToken !== expectedToken) {
+        console.log('[webhook-pagamento] Requisição ignorada: token inválido');
+        return res.status(200).json({ received: true });
+    }
+
     // Verifica se é um evento de pagamento confirmado
     if (event.event === 'PAYMENT_CONFIRMED' || event.event === 'PAYMENT_RECEIVED') {
         const payment = event.payment;
         const leadId = payment?.externalReference;
 
-        if (leadId) {
-            // Atualiza o lead no Supabase
-            await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}`, 'PATCH', {
-                status: 'paid',
-                status_pagamento: 'pago',
-                payment_id: payment.id,
-                gateway: 'asaas',
-                gateway_payment_id: payment.id,
-                valor_pago: payment.value,
-                atualizado_em: new Date().toISOString()
-            });
-
-            console.log('[webhook-pagamento] Asaas - Lead atualizado:', leadId);
+        // ===== FILTRO DE LEAD =====
+        if (!leadId) {
+            console.log('[webhook-pagamento] Requisição ignorada: leadId não encontrado');
+            return res.status(200).json({ received: true });
         }
+
+        // Verifica se o lead existe neste banco de dados
+        try {
+            const existingLead = await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}&select=id`, 'GET');
+            
+            if (!existingLead || existingLead.length === 0) {
+                console.log('[webhook-pagamento] Requisição ignorada: lead não encontrado neste banco:', leadId);
+                return res.status(200).json({ received: true });
+            }
+        } catch (err) {
+            console.error('[webhook-pagamento] Erro ao verificar lead:', err.message);
+            return res.status(200).json({ received: true });
+        }
+
+        // Atualiza o lead no Supabase
+        await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}`, 'PATCH', {
+            status: 'paid',
+            status_pagamento: 'pago',
+            payment_id: payment.id,
+            gateway: 'asaas',
+            gateway_payment_id: payment.id,
+            valor_pago: payment.value,
+            atualizado_em: new Date().toISOString()
+        });
+
+        console.log('[webhook-pagamento] Asaas - Lead atualizado:', leadId);
     }
 
     return res.status(200).json({ received: true });

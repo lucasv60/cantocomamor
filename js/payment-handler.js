@@ -17,12 +17,12 @@ window.PIX_DISCOUNT_PERCENT = 5;
 function updatePricesWithPixDiscount() {
     const isPix = window.selectedPaymentMethod === 'pix';
     const prioritaryChecked = document.getElementById('prioritaryDelivery')?.checked || false;
-    const basePrice = window.currentBasePrice || 97;
-    const prioritaryFee = prioritaryChecked ? 19.90 : 0;
+    const basePrice = window.currentBasePrice || 1; // TEMP: Fallback para R$ 1,00
+    const prioritaryFee = 0; // TEMP: Zerado para teste
     const subtotal = basePrice + prioritaryFee;
 
-    // Calcula desconto PIX
-    const pixDiscount = isPix ? (subtotal * window.PIX_DISCOUNT_PERCENT / 100) : 0;
+    // TEMP: Desconto PIX desativado para teste de R$ 1,00
+    const pixDiscount = 0;
     const totalFinal = subtotal - pixDiscount;
 
     // Salva para uso no pagamento

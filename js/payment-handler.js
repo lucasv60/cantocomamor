@@ -17,7 +17,7 @@ window.PIX_DISCOUNT_PERCENT = 5;
 function updatePricesWithPixDiscount() {
     const isPix = window.selectedPaymentMethod === 'pix';
     const prioritaryChecked = document.getElementById('prioritaryDelivery')?.checked || false;
-    const basePrice = window.currentBasePrice || 1; // TEMP: Fallback para R$ 1,00
+    const basePrice = window.currentBasePrice || 5; // TEMP: Fallback para R$ 5,00
     const prioritaryFee = 0; // TEMP: Zerado para teste
     const subtotal = basePrice + prioritaryFee;
 

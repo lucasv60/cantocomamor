@@ -1,15 +1,22 @@
 /**
  * API Route: Webhook Pagamento
- * 
+ *
  * Função serverless da Vercel para receber confirmações de pagamento
  * do Stripe e Asaas e atualizar o status do lead no Supabase.
- * 
+ *
  * Endpoint: POST /api/webhook-pagamento
  */
 
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// Desativa o bodyParser para receber raw body (necessário para validação de assinatura)
+export const config = {
+    api: {
+        bodyParser: false
+    }
+};
 
 // Cliente Supabase via fetch (sem dependência adicional)
 async function supabaseRequest(endpoint, method, body) {
@@ -34,15 +41,22 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Coleta o raw body (chunks) para validação de assinatura
+        const chunks = [];
+        for await (const chunk of req) {
+            chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+        }
+        const rawBody = Buffer.concat(chunks).toString();
+
         // Identifica a origem do webhook
         const stripeSignature = req.headers['stripe-signature'];
         
         if (stripeSignature) {
             // ===== WEBHOOK DO STRIPE =====
-            return await handleStripeWebhook(req, res, stripeSignature);
+            return await handleStripeWebhook(req, res, stripeSignature, rawBody);
         } else {
             // ===== WEBHOOK DO ASAAS =====
-            return await handleAsaasWebhook(req, res);
+            return await handleAsaasWebhook(req, res, rawBody);
         }
 
     } catch (error) {
@@ -54,13 +68,13 @@ export default async function handler(req, res) {
 /**
  * Processa webhook do Stripe
  */
-async function handleStripeWebhook(req, res, signature) {
+async function handleStripeWebhook(req, res, signature, rawBody) {
     let event;
 
     try {
-        // Verifica a assinatura do webhook
+        // Verifica a assinatura do webhook usando o raw body
         event = stripe.webhooks.constructEvent(
-            req.body,
+            rawBody,
             signature,
             process.env.STRIPE_WEBHOOK_SECRET
         );
@@ -94,8 +108,15 @@ async function handleStripeWebhook(req, res, signature) {
 /**
  * Processa webhook do Asaas
  */
-async function handleAsaasWebhook(req, res) {
-    const event = req.body;
+async function handleAsaasWebhook(req, res, rawBody) {
+    // Parse do raw body para JSON
+    let event;
+    try {
+        event = JSON.parse(rawBody);
+    } catch (err) {
+        console.error('[webhook-pagamento] Erro ao parsear body do Asaas:', err.message);
+        return res.status(400).json({ error: 'Body inválido' });
+    }
 
     // Verifica se é um evento de pagamento confirmado
     if (event.event === 'PAYMENT_CONFIRMED' || event.event === 'PAYMENT_RECEIVED') {

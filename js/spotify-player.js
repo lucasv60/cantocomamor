@@ -82,7 +82,9 @@ function togglePlay() {
     const icon = document.getElementById('playPauseIcon');
     
     if (!songAudio) return;
-    
+
+    console.log('[Player] Tentando carregar áudio de:', songAudio.src);
+
     if (isPlaying) {
         songAudio.pause();
         if (icon) icon.className = 'fas fa-play text-white text-2xl ml-1';

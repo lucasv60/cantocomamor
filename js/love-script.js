@@ -1137,7 +1137,7 @@ const musicNotes = [
     document.getElementById('note4')
 ];
 
-let isPlaying = false;
+// isPlaying é declarado em spotify-player.js — não redeclarar aqui
 
 function toggleMusic() {
     const audio = document.getElementById('songAudio');

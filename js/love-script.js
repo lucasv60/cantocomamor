@@ -1938,17 +1938,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Pausa ao passar o mouse
-    card.addEventListener('mouseenter', stopCarousel);
-    card.addEventListener('mouseleave', startCarousel);
-
-    // Pausa ao tocar (mobile)
-    card.addEventListener('touchstart', stopCarousel, { passive: true });
-    card.addEventListener('touchend', function() {
-        setTimeout(startCarousel, 1000);
-    }, { passive: true });
-
-    // Inicia o carrossel
-    startCarousel();
-    console.log('✅ Carrossel de Depoimentos Ativado');
+    // Carrossel desativado - agora sincronizado com o Player de Música
+    // As setas do mockup controlam a troca de depoimentos
+    console.log('✅ Depoimentos sincronizados com o Player');
 });

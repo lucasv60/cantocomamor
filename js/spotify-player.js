@@ -7,34 +7,66 @@ const musicas = [
     {
         titulo: 'Café da Manhã e Sonhos',
         estilo: 'Sertanejo Universitário',
-        capa: 'images/sertanejo.jpg',
+        capa: 'images/capa-musica/cafedamanhaesonhos.jpg',
         audioSrc: '/public/audio/cafe.mp3',
-        historia: "'Uma música especial para o pai, celebrando momentos de carinho e cumplicidade familiar...'",
-        duracao: '0:00'
+        historia: "'Quero uma música em homenagem ao meu pai, um homem guerreiro que sempre fez de tudo pela nossa família. Mesmo nos momentos mais difíceis, nunca desistiu e sempre encontrou forças onde parecia não existir mais nenhuma. Seu cuidado e sua presença sempre me fizeram sentir segura. Pai, eu te amo e sou eternamente grata por tudo que você fez e faz por nós.'",
+        duracao: '0:00',
+        avaliacao: {
+            nome: 'Fernanda L.',
+            foto: 'images/fernandaL.png',
+            fotoWebp: 'images/fernandaL.png',
+            estrelas: 5,
+            texto: 'Ficou simplesmente perfeito! Meu pai amou a homenagem. Ele disse que foi o presente mais lindo que já recebeu na vida. Agora ele passa o dia inteiro ouvindo a música, é só ele estar em casa que ela já começa a tocar!',
+            ocasiao: 'Presente de Aniversário'
+        }
     },
     {
         titulo: 'Jardim da Nossa Fé',
         estilo: 'MPB / Gospel',
-        capa: 'images/gospel.jpg',
+        capa: 'images/capa-musica/jardimdanossafe.jpg',
         audioSrc: '/public/audio/jardim.mp3',
-        historia: "'Uma canção que une fé e amor, perfeita para celebrar a união de um casal...'",
-        duracao: '0:00'
+        historia: "'Quero uma música gospel para homenagear meu esposo, um homem de fé inabalável, que sempre confia nos planos de Deus e transmite força através da sua espiritualidade. Quero que essa canção demonstre todo o meu amor, admiração e gratidão por ele, transformando esse sentimento em um presente lindo e emocionante.'",
+        duracao: '0:00',
+        avaliacao: {
+            nome: 'Maria Lurdes',
+            foto: 'images/mariaLurdes.png',
+            fotoWebp: 'images/mariaLurdes.png',
+            estrelas: 5,
+            texto: 'Fiz essa música para o meu esposo e foi emocionante ver a reação dele. Ele ama louvores, então cada palavra tocou profundamente o coração dele. Agora, toda vez que estamos no carro indo para algum lugar, a música vira nossa trilha sonora, ele faz questão de colocar para tocar sempre.',
+            ocasiao: 'Dia das Mães'
+        }
     },
     {
         titulo: 'Parada do Coração',
         estilo: 'Sertanejo Romântico',
-        capa: 'images/sertanejo.jpg',
+        capa: 'images/capa-musica/paradadocoracao.jpg',
         audioSrc: '/public/audio/parada.mp3',
-        historia: "'Para os namorados que querem expressar o que sentem de forma única e especial...'",
-        duracao: '0:00'
+        historia: "'Quero uma música contando a história de como conheci meu namorado. Nós nos conhecemos no ônibus, indo trabalhar. Sempre nos víamos durante o trajeto, trocando olhares discretos, até que um dia ele desceu na mesma parada que eu e resolveu puxar assunto. Foi ali que tudo começou.'",
+        duracao: '0:00',
+        avaliacao: {
+            nome: 'Matheus R.',
+            foto: 'images/MatheusR.png',
+            fotoWebp: 'images/MatheusR.png',
+            estrelas: 5,
+            texto: 'Fiz essa música de surpresa para minha namorada, contando toda a nossa história, e ela simplesmente amou! Ver nossa trajetória transformada em música deixou tudo ainda mais especial. Ficou incrível mesmo, melhor do que eu imaginava kkkkk',
+            ocasiao: 'Surpresa Romântica'
+        }
     },
     {
         titulo: 'Reencontro no Forró',
         estilo: 'Forró / Piseiro',
-        capa: 'images/folk.jpg',
+        capa: 'images/capa-musica/reencontronoforro.jpg',
         audioSrc: '/public/audio/forro.mp3',
-        historia: "'Uma música animada para surpreender a namorada com alegria e ritmo nordestino...'",
-        duracao: '0:00'
+        historia: "'Na minha música, quero contar a história do meu relacionamento com meu namorado. Nós tínhamos brigado e acabado terminando, então resolvi sair para tentar distrair a cabeça. Mas, quando cheguei no forró, me deparei com ele lá. No meio da música e da dança, não conseguimos resistir um ao outro — dançamos a noite inteira e acabamos fazendo as pazes.'",
+        duracao: '0:00',
+        avaliacao: {
+            nome: 'Mariana R.',
+            foto: 'images/MarianaR.png',
+            fotoWebp: 'images/MarianaR.png',
+            estrelas: 5,
+            texto: 'Fiz essa música para o meu amor, contando um dos momentos mais marcantes da nossa história, quando percebemos que não conseguíamos mais viver um sem o outro. A homenagem ficou simplesmente linda e emocionante. Também queria agradecer todo o time de suporte pelo atendimento incrível e por todo o carinho durante o processo!',
+            ocasiao: 'Pedido de Casamento'
+        }
     }
 ];
 
@@ -132,6 +164,53 @@ function updateMockup(data) {
     setTimeout(() => {
         if (card) card.classList.remove('mockup-fade');
     }, 400);
+
+    // Atualizar depoimento sincronizado
+    if (data.avaliacao) {
+        updateTestimonial(data.avaliacao);
+    }
+}
+
+// Atualizar card de depoimento com fade
+function updateTestimonial(avaliacao) {
+    const testimonialCard = document.getElementById('testimonialCard');
+    if (!testimonialCard) return;
+
+    // Fade out
+    testimonialCard.style.opacity = '0';
+    testimonialCard.style.transition = 'opacity 0.3s ease-in-out';
+
+    setTimeout(() => {
+        // Atualizar elementos
+        const photoEl = document.getElementById('testimonialPhoto');
+        const nameEl = document.getElementById('testimonialName');
+        const starsEl = document.getElementById('testimonialStars');
+        const textEl = document.getElementById('testimonialText');
+        const occasionEl = document.getElementById('testimonialOccasion');
+
+        if (photoEl) {
+            photoEl.src = avaliacao.foto;
+            photoEl.alt = avaliacao.nome;
+            // Atualizar source webp se existir
+            const sourceEl = photoEl.parentElement.querySelector('source');
+            if (sourceEl && avaliacao.fotoWebp) {
+                sourceEl.srcset = avaliacao.fotoWebp;
+            }
+        }
+        if (nameEl) nameEl.textContent = avaliacao.nome;
+        if (starsEl) {
+            let starsHtml = '';
+            for (let i = 0; i < avaliacao.estrelas; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+            starsEl.innerHTML = starsHtml;
+        }
+        if (textEl) textEl.textContent = '"' + avaliacao.texto + '"';
+        if (occasionEl) occasionEl.textContent = avaliacao.occasiao;
+
+        // Fade in
+        testimonialCard.style.opacity = '1';
+    }, 300);
 }
 
 // Próxima música
@@ -152,6 +231,9 @@ function initPlayer() {
     
     // Carregar primeira música
     songAudio.src = musicas[0].audioSrc;
+    
+    // Inicializar mockup com dados da primeira música
+    updateMockup(musicas[0]);
     
     // Eventos do áudio
     songAudio.addEventListener('timeupdate', updateProgress);

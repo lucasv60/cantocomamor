@@ -8,7 +8,7 @@ const musicas = [
         titulo: 'Café da Manhã e Sonhos',
         estilo: 'Sertanejo Universitário',
         capa: 'images/sertanejo.jpg',
-        audioSrc: '/audio/cafe.mp3',
+        audioSrc: '/public/audio/cafe.mp3',
         historia: "'Uma música especial para o pai, celebrando momentos de carinho e cumplicidade familiar...'",
         duracao: '0:00'
     },
@@ -16,7 +16,7 @@ const musicas = [
         titulo: 'Jardim da Nossa Fé',
         estilo: 'MPB / Gospel',
         capa: 'images/gospel.jpg',
-        audioSrc: '/audio/jardim.mp3',
+        audioSrc: '/public/audio/jardim.mp3',
         historia: "'Uma canção que une fé e amor, perfeita para celebrar a união de um casal...'",
         duracao: '0:00'
     },
@@ -24,7 +24,7 @@ const musicas = [
         titulo: 'Parada do Coração',
         estilo: 'Sertanejo Romântico',
         capa: 'images/sertanejo.jpg',
-        audioSrc: '/audio/parada.mp3',
+        audioSrc: '/public/audio/parada.mp3',
         historia: "'Para os namorados que querem expressar o que sentem de forma única e especial...'",
         duracao: '0:00'
     },
@@ -32,7 +32,7 @@ const musicas = [
         titulo: 'Reencontro no Forró',
         estilo: 'Forró / Piseiro',
         capa: 'images/folk.jpg',
-        audioSrc: '/audio/forro.mp3',
+        audioSrc: '/public/audio/forro.mp3',
         historia: "'Uma música animada para surpreender a namorada com alegria e ritmo nordestino...'",
         duracao: '0:00'
     }

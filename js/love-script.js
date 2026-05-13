@@ -1127,7 +1127,7 @@ if (backStepBtn) {
 const playButton = document.getElementById('playButton');
 const listenExampleBtn = document.getElementById('listenExampleBtn');
 const playIcon = document.getElementById('playIcon');
-const songAudio = document.getElementById('songAudio');
+// songAudio é declarado em spotify-player.js — não redeclarar aqui
 const audioWave = document.getElementById('audioWave');
 const heroSection = document.getElementById('heroSection');
 const musicNotes = [
@@ -1140,9 +1140,10 @@ const musicNotes = [
 let isPlaying = false;
 
 function toggleMusic() {
+    const audio = document.getElementById('songAudio');
     if (isPlaying) {
         // Pausar a música
-        songAudio.pause();
+        audio?.pause();
         playIcon.classList.remove('fa-pause');
         playIcon.classList.add('fa-play');
         playButton.classList.remove('active');
@@ -1150,7 +1151,7 @@ function toggleMusic() {
         heroSection.classList.remove('playing');
     } else {
         // Tocar a música
-        songAudio.play();
+        audio?.play();
         playIcon.classList.remove('fa-play');
         playIcon.classList.add('fa-pause');
         playButton.classList.add('active');
@@ -1174,8 +1175,9 @@ if (playButton) playButton.addEventListener('click', toggleMusic);
 if (listenExampleBtn) listenExampleBtn.addEventListener('click', toggleMusic);
 
 // Quando a música terminar, redefinir a UI
-if (songAudio) {
-    songAudio.addEventListener('ended', () => {
+const songAudioEl = document.getElementById('songAudio');
+if (songAudioEl) {
+    songAudioEl.addEventListener('ended', () => {
         playIcon?.classList.remove('fa-pause');
         playIcon?.classList.add('fa-play');
         playButton?.classList.remove('active');
@@ -1322,7 +1324,7 @@ link.href = canvas.toDataURL();
     };
 
     const PRIORITARY_FEE = 19.90;
-    const fmt = n => (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const fmt = n => (typeof n === 'number' && !isNaN(n) ? n : 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     // Preço base a partir do ?p=
     function normalizePriceKeyFromURL() {
@@ -1458,7 +1460,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextBtn = document.querySelector('.example-next');
     const playButton = document.getElementById('playButton');
     const playIcon = document.getElementById('playIcon');
-    const songAudio = document.getElementById('songAudio');
+    // songAudio é declarado em spotify-player.js — acessar via getElementById diretamente
     const audioWave = document.getElementById('audioWave');
     let currentIndex = 0;
     let isExamplePlaying = false;
@@ -1475,14 +1477,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleMusic() {
         if (isExamplePlaying) {
             // Pausar a música
-            songAudio.pause();
+            document.getElementById('songAudio')?.pause();
             playIcon.classList.remove('fa-pause');
             playIcon.classList.add('fa-play');
             playButton.classList.remove('active');
             audioWave.classList.remove('playing');
         } else {
             // Tocar a música do slide atual
-            songAudio.play();
+            document.getElementById('songAudio')?.play();
             playIcon.classList.remove('fa-play');
             playIcon.classList.add('fa-pause');
             playButton.classList.add('active');
@@ -1509,9 +1511,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentGenre = slides[index].getAttribute('data-genre');
         const slideAudio = slides[index].getAttribute('data-audio');
         console.log('currentGenre', currentGenre)
-        if (songAudio) {
-            songAudio.src = slideAudio || genreAudios[currentGenre] || '';
-            songAudio.load();
+        const audio = document.getElementById('songAudio');
+        if (audio) {
+            audio.src = slideAudio || genreAudios[currentGenre] || '';
+            audio.load();
         }
     }
 
@@ -1531,8 +1534,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (playButton) playButton.addEventListener('click', toggleMusic);
 
     // Quando a música terminar, redefinir a UI
-    if (songAudio) {
-        songAudio.addEventListener('ended', () => {
+    const audioEl = document.getElementById('songAudio');
+    if (audioEl) {
+        audioEl.addEventListener('ended', () => {
             playIcon?.classList.remove('fa-pause');
             playIcon?.classList.add('fa-play');
             playButton?.classList.remove('active');
@@ -1699,28 +1703,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const priceKey = normalizePriceKeyFromURL();
-    const price         = prices[priceKey] || prices["p5"];
-    const originalPrice = originalPrices[priceKey] || originalPrices["p5"];
+    const price         = prices[priceKey] || prices["p5"] || 97;
+    const originalPrice = originalPrices[priceKey] || originalPrices["p5"] || 249;
 
     const formNameInput = document.querySelector('#priceRef');
     if (formNameInput) {
         formNameInput.value = `${String(price).replace('.', '_')}`;
     }
 
-    // Formata os preços
-    const formattedPrice = price.toLocaleString('pt-BR', {
+    // Formata os preços (com proteção contra undefined)
+    const safePrice = typeof price === 'number' && !isNaN(price) ? price : 97;
+    const safeOriginalPrice = typeof originalPrice === 'number' && !isNaN(originalPrice) ? originalPrice : 249;
+
+    const formattedPrice = safePrice.toLocaleString('pt-BR', {
         style: 'currency',
         currency: 'BRL'
     });
 
-    const formattedOriginalPrice = originalPrice.toLocaleString('pt-BR', {
+    const formattedOriginalPrice = safeOriginalPrice.toLocaleString('pt-BR', {
         style: 'currency',
         currency: 'BRL'
     });
 
     // Calcula economia
-    const savings = originalPrice - price;
-    const savingsPercentage = Math.round((savings / originalPrice) * 100);
+    const savings = Math.max(safeOriginalPrice - safePrice, 0);
+    const savingsPercentage = safeOriginalPrice > 0 ? Math.round((savings / safeOriginalPrice) * 100) : 0;
 
     const formattedSavings = savings.toLocaleString('pt-BR', {
         style: 'currency',

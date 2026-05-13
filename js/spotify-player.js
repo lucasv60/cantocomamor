@@ -1,90 +1,102 @@
 /**
  * Spotify Player Mockup - Canto com Amor
- * Lógica do player de música simulado no Hero
+ * Lógica do player de música com áudio real no Hero
  */
 
 const musicas = [
     {
-        titulo: 'Beijo de Mar',
+        titulo: 'Café da Manhã e Sonhos',
+        estilo: 'Sertanejo Universitário',
+        capa: 'images/sertanejo.jpg',
+        audioSrc: '/audio/cafe.mp3',
+        historia: "'Uma música especial para o pai, celebrando momentos de carinho e cumplicidade familiar...'",
+        duracao: '0:00'
+    },
+    {
+        titulo: 'Jardim da Nossa Fé',
+        estilo: 'MPB / Gospel',
+        capa: 'images/gospel.jpg',
+        audioSrc: '/audio/jardim.mp3',
+        historia: "'Uma canção que une fé e amor, perfeita para celebrar a união de um casal...'",
+        duracao: '0:00'
+    },
+    {
+        titulo: 'Parada do Coração',
         estilo: 'Sertanejo Romântico',
         capa: 'images/sertanejo.jpg',
-        youtubeId: '',
-        historia: "'Quero que a música fale do nosso primeiro encontro na praia, do som das ondas e de como o beijo dela mudou minha vida...'",
-        duracao: '3:20'
+        audioSrc: '/audio/parada.mp3',
+        historia: "'Para os namorados que querem expressar o que sentem de forma única e especial...'",
+        duracao: '0:00'
     },
     {
-        titulo: 'Raízes do Campo',
-        estilo: 'Folk Brasileiro',
+        titulo: 'Reencontro no Forró',
+        estilo: 'Forró / Piseiro',
         capa: 'images/folk.jpg',
-        youtubeId: '',
-        historia: "'Uma canção que celebra as tradições e a simplicidade da vida no interior, com violão e sanfona...'",
-        duracao: '2:55'
-    },
-    {
-        titulo: 'Graça Divina',
-        estilo: 'Gospel Inspirador',
-        capa: 'images/gospel.jpg',
-        youtubeId: '',
-        historia: "'Uma música de gratidão e fé, para momentos de reflexão e celebração espiritual...'",
-        duracao: '4:10'
-    },
-    {
-        titulo: 'Noite de Verão',
-        estilo: 'MPB Contemporânea',
-        capa: 'images/mpb.jpg',
-        youtubeId: '',
-        historia: "'Inspirada nas noites de verão no Rio, com bossa nova, poesia e melancolia suave...'",
-        duracao: '3:45'
+        audioSrc: '/audio/forro.mp3',
+        historia: "'Uma música animada para surpreender a namorada com alegria e ritmo nordestino...'",
+        duracao: '0:00'
     }
 ];
 
 let musicaAtual = 0;
-let isSpotifyPlaying = false;
-let progressInterval = null;
-let currentProgress = 0;
+let isPlaying = false;
 
+// Referência ao elemento de áudio
+const songAudio = document.getElementById('songAudio');
+
+// Formatar tempo em mm:ss
+function formatTime(seconds) {
+    if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return mins + ':' + (secs < 10 ? '0' : '') + secs;
+}
+
+// Atualizar barra de progresso
+function updateProgress() {
+    if (!songAudio || !songAudio.duration) return;
+    
+    const percent = (songAudio.currentTime / songAudio.duration) * 100;
+    const progressBar = document.getElementById('progressBar');
+    const progressDot = document.getElementById('progressDot');
+    const currentTimeEl = document.getElementById('currentTime');
+    
+    if (progressBar) progressBar.style.width = percent + '%';
+    if (progressDot) progressDot.style.left = percent + '%';
+    if (currentTimeEl) currentTimeEl.textContent = formatTime(songAudio.currentTime);
+}
+
+// Atualizar duração total quando o áudio carregar
+function updateDuration() {
+    if (!songAudio || !songAudio.duration) return;
+    
+    const totalTimeEl = document.getElementById('totalTime');
+    if (totalTimeEl) totalTimeEl.textContent = formatTime(songAudio.duration);
+    
+    // Atualiza também no array de músicas
+    musicas[musicaAtual].duracao = formatTime(songAudio.duration);
+}
+
+// Toggle play/pause
 function togglePlay() {
-    const btn = document.getElementById('playPauseBtn');
     const icon = document.getElementById('playPauseIcon');
-    const frame = document.getElementById('youtubeFrame');
-    const atual = musicas[musicaAtual];
     
-    isSpotifyPlaying = !isSpotifyPlaying;
+    if (!songAudio) return;
     
-    if (isSpotifyPlaying) {
-        icon.className = 'fas fa-pause text-white text-2xl';
-        // Controle do YouTube via postMessage
-        if (atual.youtubeId) {
-            frame.src = `https://www.youtube.com/embed/${atual.youtubeId}?autoplay=1&enablejsapi=1`;
-            frame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        }
-        // Simular progresso
-        progressInterval = setInterval(() => {
-            if (currentProgress < 100) {
-                currentProgress += 0.5;
-                updateProgress(currentProgress);
-            }
-        }, 1000);
+    if (isPlaying) {
+        songAudio.pause();
+        if (icon) icon.className = 'fas fa-play text-white text-2xl ml-1';
     } else {
-        icon.className = 'fas fa-play text-white text-2xl ml-1';
-        if (musicas[musicaAtual].youtubeId) {
-            frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-        }
-        clearInterval(progressInterval);
+        songAudio.play().catch(err => {
+            console.warn('[Player] Erro ao reproduzir:', err);
+        });
+        if (icon) icon.className = 'fas fa-pause text-white text-2xl';
     }
+    
+    isPlaying = !isPlaying;
 }
 
-function updateProgress(percent) {
-    document.getElementById('progressBar').style.width = percent + '%';
-    document.getElementById('progressDot').style.left = percent + '%';
-    // Atualizar tempo
-    const totalSeconds = 200; // 3:20
-    const current = Math.floor((percent / 100) * totalSeconds);
-    const mins = Math.floor(current / 60);
-    const secs = current % 60;
-    document.getElementById('currentTime').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
-}
-
+// Atualizar mockup com dados da música
 function updateMockup(data) {
     const card = document.querySelector('#smartphoneMockup .bg-white.rounded-\\[2\\.5rem\\]');
     if (card) card.classList.add('mockup-fade');
@@ -94,24 +106,69 @@ function updateMockup(data) {
     document.getElementById('mockupCover').src = data.capa;
     document.getElementById('mockupStory').textContent = data.historia;
     document.getElementById('totalTime').textContent = data.duracao;
-    // Reset
-    currentProgress = 0;
-    updateProgress(0);
-    if (isSpotifyPlaying) togglePlay();
+    
+    // Carregar nova fonte de áudio
+    if (songAudio) {
+        songAudio.src = data.audioSrc;
+        songAudio.load();
+    }
+    
+    // Reset progresso
+    const progressBar = document.getElementById('progressBar');
+    const progressDot = document.getElementById('progressDot');
+    const currentTimeEl = document.getElementById('currentTime');
+    
+    if (progressBar) progressBar.style.width = '0%';
+    if (progressDot) progressDot.style.left = '0%';
+    if (currentTimeEl) currentTimeEl.textContent = '0:00';
+    
+    // Se estava tocando, continua tocando a nova música
+    if (isPlaying) {
+        songAudio.play().catch(err => console.warn('[Player] Erro ao reproduzir:', err));
+    }
 
     setTimeout(() => {
         if (card) card.classList.remove('mockup-fade');
     }, 400);
 }
 
+// Próxima música
 function proximaMusica() {
     musicaAtual = (musicaAtual + 1) % musicas.length;
     updateMockup(musicas[musicaAtual]);
 }
 
+// Música anterior
 function musicaAnterior() {
     musicaAtual = (musicaAtual - 1 + musicas.length) % musicas.length;
     updateMockup(musicas[musicaAtual]);
+}
+
+// Inicializar player
+function initPlayer() {
+    if (!songAudio) return;
+    
+    // Carregar primeira música
+    songAudio.src = musicas[0].audioSrc;
+    
+    // Eventos do áudio
+    songAudio.addEventListener('timeupdate', updateProgress);
+    songAudio.addEventListener('loadedmetadata', updateDuration);
+    songAudio.addEventListener('ended', () => {
+        // Próxima música automaticamente
+        proximaMusica();
+    });
+    
+    // Clique na barra de progresso para seek
+    const progressContainer = document.querySelector('#smartphoneMockup .bg-gray-100.h-1\\.5');
+    if (progressContainer) {
+        progressContainer.addEventListener('click', (e) => {
+            if (!songAudio.duration) return;
+            const rect = progressContainer.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            songAudio.currentTime = percent * songAudio.duration;
+        });
+    }
 }
 
 // Swipe gesture support
@@ -133,9 +190,11 @@ function musicaAnterior() {
     }, { passive: true });
 })();
 
+// Inicializar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', initPlayer);
+
 // Exportar funções para uso global
 window.togglePlay = togglePlay;
-window.updateProgress = updateProgress;
 window.updateMockup = updateMockup;
 window.proximaMusica = proximaMusica;
 window.musicaAnterior = musicaAnterior;

@@ -382,11 +382,57 @@ document.getElementById('closePixModal')?.addEventListener('click', function() {
 });
 
 // ========================================
+// SELETOR DE MÉTODO DE PAGAMENTO
+// ========================================
+function initPaymentMethodSelector() {
+    const buttons = document.querySelectorAll('.payment-method-btn');
+    const hiddenInput = document.getElementById('selectedPaymentMethod');
+    const cardFormSection = document.getElementById('cardFormSection');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const method = this.getAttribute('data-method');
+
+            // Remove active de todos os botões
+            buttons.forEach(b => {
+                b.classList.remove('active');
+                b.querySelector('.method-icon')?.classList.remove('text-pink-300');
+                b.querySelector('.method-icon')?.classList.add('text-gray-500');
+            });
+
+            // Adiciona active ao botão clicado
+            this.classList.add('active');
+            this.querySelector('.method-icon')?.classList.remove('text-gray-500');
+            this.querySelector('.method-icon')?.classList.add('text-pink-300');
+
+            // Atualiza variáveis globais
+            window.selectedPaymentMethod = method;
+            if (hiddenInput) hiddenInput.value = method;
+
+            // Mostra/oculta formulário de cartão
+            if (cardFormSection) {
+                if (method === 'credit_card') {
+                    cardFormSection.classList.add('show');
+                } else {
+                    cardFormSection.classList.remove('show');
+                }
+            }
+
+            // Atualiza preços (desconto PIX só se PIX selecionado)
+            if (typeof updatePricesWithPixDiscount === 'function') {
+                updatePricesWithPixDiscount();
+            }
+        });
+    });
+}
+
+// ========================================
 // INICIALIZAÇÃO
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
     window.selectedPaymentMethod = 'pix';
     updatePricesWithPixDiscount();
+    initPaymentMethodSelector();
 });
 
 // Exportar funções globais

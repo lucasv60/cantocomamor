@@ -60,7 +60,7 @@ const musicas = [
         historia: "'Na minha música, quero contar a história do meu relacionamento com meu namorado. Nós tínhamos brigado e acabado terminando, então resolvi sair para tentar distrair a cabeça. Mas, quando cheguei no forró, me deparei com ele lá. No meio da música e da dança, não conseguimos resistir um ao outro — dançamos a noite inteira e acabamos fazendo as pazes.'",
         duracao: '0:00',
         avaliacao: {
-            nome: 'Mariana R.',
+            nome: 'Larissa R.',
             foto: 'images/MarianaR.png',
             fotoWebp: 'images/MarianaR.png',
             estrelas: 5,

@@ -44,6 +44,10 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.cursor-not-allowed {
+    cursor: not-allowed !important;
+}
+
 .btn-destaque:hover {
     animation: pulsante 1s infinite ease-in-out;
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;

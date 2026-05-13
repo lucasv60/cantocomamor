@@ -407,6 +407,9 @@ document.addEventListener('DOMContentLoaded', function() {
             window.generatedLyric = data.letra;
             window.lastGeneratedLyric = data.letra;
 
+            // Ativa o botão "Continuar" após a letra ser revisada
+            checkStep2Completion();
+
 
 
             // ===== incremento do limite (sucesso) =====
@@ -758,6 +761,9 @@ document.addEventListener('DOMContentLoaded', function() {
             window.generatedLyric      = data.letra;
             window.lastGeneratedLyric  = data.letra;
 
+            // Ativa o botão "Continuar" após a letra ser gerada
+            checkStep2Completion();
+
 
 
         } catch (error) {
@@ -775,6 +781,9 @@ document.addEventListener('DOMContentLoaded', function() {
 Você pode continuar para o pagamento agora — você terá direito a revisar sua letra e sua música depois. 😊`;
             }
             showGenerationReassure(); // exibe o aviso azul
+
+            // Ativa o botão mesmo com mensagem de fallback
+            checkStep2Completion();
 
         } finally {
             clearTimeout(stallId);
@@ -864,6 +873,9 @@ async function goToStep3() {
     }
 
     try { triggerEmailReminderOnPriceStep(); } catch (_) {}
+
+    // Verifica estado do botão de pagamento ao entrar no Step 3
+    checkStep3Completion();
 }
 
 
@@ -974,6 +986,32 @@ function checkStep2Completion() {
     }
 }
 
+// Verificação em tempo real para Step 3 (botão Finalizar Pagamento)
+function checkStep3Completion() {
+    const btnFinalizar = document.getElementById('btnFinalizarPagamento');
+    if (!btnFinalizar) return;
+
+    const nameInput = document.getElementById('customerName');
+    const cpfInput = document.getElementById('customerCpf');
+    const emailInput = document.getElementById('customerEmail');
+    const phoneInput = document.getElementById('customerPhone');
+
+    const hasName = nameInput && nameInput.value.trim().length >= 2;
+    const hasCpf = cpfInput && cpfInput.value.replace(/\D/g, '').length === 11;
+    const hasEmail = emailInput && /\S+@\S+\.\S+/.test(emailInput.value.trim());
+    const hasPhone = phoneInput && phoneInput.value.replace(/\D/g, '').length >= 10;
+
+    const allValid = hasName && hasCpf && hasEmail && hasPhone;
+
+    if (allValid) {
+        btnFinalizar.classList.remove('opacity-50', 'cursor-not-allowed');
+        btnFinalizar.classList.add('opacity-100', 'btn-destaque');
+    } else {
+        btnFinalizar.classList.remove('opacity-100', 'btn-destaque');
+        btnFinalizar.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+}
+
 // limpa erro ao digitar/trocar (sem scroll automático) + verificação em tempo real
 REQUIRED.forEach(f => {
     const el = document.getElementById(f.id);
@@ -1002,6 +1040,17 @@ if (generatedLyricsEl) {
 document.addEventListener('DOMContentLoaded', () => {
     checkFormCompletion();
     checkStep2Completion();
+    checkStep3Completion();
+
+    // Listeners para campos do Step 3
+    const step3Fields = ['customerName', 'customerCpf', 'customerPhone'];
+    step3Fields.forEach(fieldId => {
+        const el = document.getElementById(fieldId);
+        if (el) {
+            el.addEventListener('input', () => checkStep3Completion(), { passive: true });
+            el.addEventListener('change', () => checkStep3Completion(), { passive: true });
+        }
+    });
 });
 
 function validateRequiredFields({scrollToFirst=true} = {}) {

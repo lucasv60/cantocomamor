@@ -68,7 +68,7 @@ async function prepareUserData(userData) {
 /**
  * Envia evento para a Meta Conversions API
  */
-async function sendMetaEvent(eventName, eventData, userData, actionSource = 'website') {
+async function sendMetaEvent(eventName, eventData, userData, actionSource = 'website', testEventCode = null) {
     const eventId = generateEventId();
     const eventTime = Math.floor(Date.now() / 1000);
     
@@ -98,8 +98,11 @@ async function sendMetaEvent(eventName, eventData, userData, actionSource = 'web
         ]
     };
     
+    // Adiciona test_event_code se fornecido (para testes no Facebook Events Manager)
+    const testCodeParam = testEventCode ? `&test_event_code=${testEventCode}` : '';
+    
     try {
-        const response = await fetch(`${META_API_URL}?access_token=${META_ACCESS_TOKEN}`, {
+        const response = await fetch(`${META_API_URL}?access_token=${META_ACCESS_TOKEN}${testCodeParam}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -141,7 +144,7 @@ export default async function handler(req, res) {
     }
     
     try {
-        const { event_name, event_data, user_data } = req.body;
+        const { event_name, event_data, user_data, test_event_code } = req.body;
         
         if (!event_name) {
             return res.status(400).json({ error: 'event_name is required' });
@@ -158,13 +161,13 @@ export default async function handler(req, res) {
         ];
         
         if (!allowedEvents.includes(event_name)) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 error: 'Invalid event_name',
                 allowed_events: allowedEvents
             });
         }
         
-        const result = await sendMetaEvent(event_name, event_data, user_data);
+        const result = await sendMetaEvent(event_name, event_data, user_data, 'website', test_event_code);
         
         return res.status(result.success ? 200 : 500).json(result);
         

@@ -1301,7 +1301,7 @@ link.href = canvas.toDataURL();
     const prices = {
         p01829128839102: 3,
         p03: 57.00,  p02: 67.00,  p01: 77.00,  p0: 87.00,
-        p1: 5.00,   // TEMP: Alterado para teste de R$ 5,00 (era 97.00)
+        p1: 8.00,   // Preço base alterado para R$ 8,00 (mínimo Asaas R$ 5,00)
         p6: 147.00,  p7: 157.00, p8: 167.00, p9: 177.00, p10: 187.00,
         p11: 197.00, p12: 207.00, p13: 217.00, p14: 227.00, p15: 237.00,
         p16: 247.00, p17: 257.00, p18: 267.00, p19: 277.00, p20: 287.00,
@@ -1585,7 +1585,7 @@ document.addEventListener('DOMContentLoaded', function () {
         p02: 67.00,
         p01: 77.00,
         p0: 87.00,
-        p1: 97.00,
+        p1: 8.00,   // Preço base alterado para R$ 8,00
         p3: 117.00,
         p4: 127.00,
         p5: 97.00,

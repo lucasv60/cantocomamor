@@ -26,7 +26,13 @@ function updatePricesWithPixDiscount() {
 
     // Desconto PIX (5% se PIX, 0% para outros métodos)
     const pixDiscount = isPix ? Math.round(subtotal * (window.PIX_DISCOUNT_PERCENT / 100) * 100) / 100 : 0;
-    const totalFinal = Math.max(subtotal - pixDiscount, 0);
+    let totalFinal = Math.max(subtotal - pixDiscount, 0);
+    
+    // Garante valor mínimo de R$ 5,00 para Asaas API
+    const MINIMUM_AMOUNT = 5.00;
+    if (totalFinal < MINIMUM_AMOUNT) {
+        totalFinal = MINIMUM_AMOUNT;
+    }
 
     // Salva para uso no pagamento (garante que é Number)
     window.currentTotalWithDiscount = Number(totalFinal.toFixed(2));

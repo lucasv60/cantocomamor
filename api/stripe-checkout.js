@@ -64,7 +64,7 @@ export default async function handler(req, res) {
                 },
             ],
             mode: 'payment',
-            success_url: `${req.headers.origin}/sucesso.html?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${req.headers.origin}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.origin}/?cancel=true`,
             metadata: {
                 leadId: leadId || '',

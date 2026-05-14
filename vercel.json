@@ -1,6 +1,7 @@
 {
   "outputDirectory": ".",
   "rewrites": [
+    { "source": "/sucesso", "destination": "/sucesso.html" },
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
   "headers": [

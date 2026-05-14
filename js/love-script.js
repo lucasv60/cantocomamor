@@ -472,8 +472,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Push dataLayer event for GTM - AddToCart
         window.dataLayer = window.dataLayer || [];
+        const addToCartEventId = window.MetaTracking?.generateEventId() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const addToCartCookies = window.MetaTracking?.getMetaCookies() || {};
         window.dataLayer.push({
             'event': 'add_to_cart',
+            'event_id': addToCartEventId,
             'content_name': 'Geração de Letra',
             'content_category': 'music_creation',
             'value': window.currentBasePrice || 97.00,
@@ -481,7 +484,10 @@ document.addEventListener('DOMContentLoaded', function() {
             'user_data': {
                 'email': window.userData?.email || '',
                 'phone': window.userData?.telefone || '',
-                'name': window.userData?.nome_completo || ''
+                'name': window.userData?.nome_completo || '',
+                'fbp': addToCartCookies.fbp || null,
+                'fbc': addToCartCookies.fbc || null,
+                'external_id': window.currentLeadId || null
             }
         });
 
@@ -1771,10 +1777,17 @@ function openMainModal() {
 
     // Push dataLayer event for GTM - ViewContent
     window.dataLayer = window.dataLayer || [];
+    const viewContentEventId = window.MetaTracking?.generateEventId() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const viewContentCookies = window.MetaTracking?.getMetaCookies() || {};
     window.dataLayer.push({
         'event': 'view_content',
+        'event_id': viewContentEventId,
         'content_name': 'Formulário de Música Personalizada',
-        'content_category': 'music_creation'
+        'content_category': 'music_creation',
+        'user_data': {
+            'fbp': viewContentCookies.fbp || null,
+            'fbc': viewContentCookies.fbc || null
+        }
     });
 
     // garante que sempre abre no passo 1

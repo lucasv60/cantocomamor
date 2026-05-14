@@ -201,8 +201,11 @@ async function processarPagamento() {
 
         // Push dataLayer event for GTM - InitiateCheckout
         window.dataLayer = window.dataLayer || [];
+        const initiateCheckoutEventId = window.MetaTracking?.generateEventId() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const initiateCheckoutCookies = window.MetaTracking?.getMetaCookies() || {};
         window.dataLayer.push({
             'event': 'initiate_checkout',
+            'event_id': initiateCheckoutEventId,
             'content_name': 'Checkout Música Personalizada',
             'content_category': 'music_purchase',
             'value': window.currentTotalWithDiscount || 97,
@@ -211,7 +214,10 @@ async function processarPagamento() {
             'user_data': {
                 'email': document.getElementById('customerEmail')?.value?.trim() || '',
                 'phone': document.getElementById('customerPhone')?.value?.trim() || '',
-                'name': document.getElementById('customerName')?.value?.trim() || ''
+                'name': document.getElementById('customerName')?.value?.trim() || '',
+                'fbp': initiateCheckoutCookies.fbp || null,
+                'fbc': initiateCheckoutCookies.fbc || null,
+                'external_id': window.currentLeadId || null
             }
         });
 
@@ -323,8 +329,11 @@ function mostrarModalPix(data) {
 
     // Push dataLayer event for GTM - AddPaymentInfo (payment confirmed/QR displayed)
     window.dataLayer = window.dataLayer || [];
+    const addPaymentInfoEventId = window.MetaTracking?.generateEventId() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const addPaymentInfoCookies = window.MetaTracking?.getMetaCookies() || {};
     window.dataLayer.push({
         'event': 'add_payment_info',
+        'event_id': addPaymentInfoEventId,
         'content_name': 'Checkout Música Personalizada',
         'content_category': 'music_purchase',
         'value': data.valor || window.currentTotalWithDiscount || 97,
@@ -333,7 +342,10 @@ function mostrarModalPix(data) {
         'user_data': {
             'email': document.getElementById('customerEmail')?.value?.trim() || '',
             'phone': document.getElementById('customerPhone')?.value?.trim() || '',
-            'name': document.getElementById('customerName')?.value?.trim() || ''
+            'name': document.getElementById('customerName')?.value?.trim() || '',
+            'fbp': addPaymentInfoCookies.fbp || null,
+            'fbc': addPaymentInfoCookies.fbc || null,
+            'external_id': window.currentLeadId || null
         }
     });
 

@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagamento Confirmado - Canto com Amor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/meta-tracking.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/love-style.css">
     <style>
@@ -171,8 +172,11 @@
                         
                         // Push para o dataLayer (GTM)
                         window.dataLayer = window.dataLayer || [];
+                        const purchaseEventId = window.MetaTracking?.generateEventId() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                        const purchaseCookies = window.MetaTracking?.getMetaCookies() || {};
                         window.dataLayer.push({
                             'event': 'Purchase',
+                            'event_id': purchaseEventId,
                             'transaction_id': transactionId,
                             'value': data.value || 0,
                             'currency': 'BRL',
@@ -187,7 +191,10 @@
                             'user_data': {
                                 'email': data.email || '',
                                 'phone': data.phone || '',
-                                'name': data.name || ''
+                                'name': data.name || '',
+                                'fbp': purchaseCookies.fbp || null,
+                                'fbc': purchaseCookies.fbc || null,
+                                'external_id': data.lead_id || null
                             }
                         });
                         
@@ -203,6 +210,7 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 event_name: 'Purchase',
+                                event_id: purchaseEventId,
                                 event_data: {
                                     transaction_id: transactionId,
                                     value: data.value || 0,

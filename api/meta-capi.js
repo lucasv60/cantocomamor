@@ -61,6 +61,21 @@ async function prepareUserData(userData) {
     if (userData?.cpf) {
         hashedData.external_id = [await hashData(userData.cpf.replace(/\D/g, ''))];
     }
+    if (userData?.external_id) {
+        hashedData.external_id = [await hashData(userData.external_id)];
+    }
+    if (userData?.fbp) {
+        hashedData.fbp = userData.fbp;
+    }
+    if (userData?.fbc) {
+        hashedData.fbc = userData.fbc;
+    }
+    if (userData?.client_ip_address) {
+        hashedData.client_ip_address = userData.client_ip_address;
+    }
+    if (userData?.client_user_agent) {
+        hashedData.client_user_agent = userData.client_user_agent;
+    }
     
     return hashedData;
 }
@@ -68,8 +83,9 @@ async function prepareUserData(userData) {
 /**
  * Envia evento para a Meta Conversions API
  */
-async function sendMetaEvent(eventName, eventData, userData, actionSource = 'website', testEventCode = null) {
-    const eventId = generateEventId();
+async function sendMetaEvent(eventName, eventData, userData, actionSource = 'website', testEventCode = null, eventId = null) {
+    // Usa event_id fornecido ou gera um novo (para deduplicação)
+    const finalEventId = eventId || generateEventId();
     const eventTime = Math.floor(Date.now() / 1000);
     
     const hashedUserData = await prepareUserData(userData);
@@ -79,7 +95,7 @@ async function sendMetaEvent(eventName, eventData, userData, actionSource = 'web
             {
                 event_name: eventName,
                 event_time: eventTime,
-                event_id: eventId,
+                event_id: finalEventId,
                 action_source: actionSource,
                 user_data: hashedUserData,
                 custom_data: {
@@ -114,7 +130,7 @@ async function sendMetaEvent(eventName, eventData, userData, actionSource = 'web
         
         console.log('[Meta CAPI] Event sent:', {
             event_name: eventName,
-            event_id: eventId,
+            event_id: finalEventId,
             status: response.status,
             result: result
         });
@@ -144,7 +160,7 @@ export default async function handler(req, res) {
     }
     
     try {
-        const { event_name, event_data, user_data, test_event_code } = req.body;
+        const { event_name, event_id, event_data, user_data, test_event_code } = req.body;
         
         if (!event_name) {
             return res.status(400).json({ error: 'event_name is required' });
@@ -167,7 +183,21 @@ export default async function handler(req, res) {
             });
         }
         
-        const result = await sendMetaEvent(event_name, event_data, user_data, 'website', test_event_code);
+        // Extrai IP e User Agent da requisição
+        const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+                         req.headers['x-real-ip'] ||
+                         req.connection?.remoteAddress ||
+                         null;
+        const clientUserAgent = req.headers['user-agent'] || null;
+        
+        // Adiciona IP e User Agent aos dados do usuário
+        const enrichedUserData = {
+            ...user_data,
+            client_ip_address: clientIp,
+            client_user_agent: clientUserAgent
+        };
+        
+        const result = await sendMetaEvent(event_name, event_data, enrichedUserData, 'website', test_event_code, event_id);
         
         return res.status(result.success ? 200 : 500).json(result);
         

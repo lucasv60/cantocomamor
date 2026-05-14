@@ -470,16 +470,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Salva lead no Supabase antes de gerar a letra
         saveLead().catch(err => console.error('[LEAD] Falha ao salvar:', err));
 
-        // ✅ Dispara evento InitiateCheckout do Facebook Pixel
-        if (typeof fbq !== 'undefined') {
-            fbq('track', 'InitiateCheckout', {
-                content_name: 'Geração de Letra',
-                content_category: 'music_creation',
-                value: window.currentBasePrice || 97.00,
-                currency: 'BRL'
-            });
-        }
-
         const useOwnLyric = document.getElementById('useMessageAsLyric')?.checked;
         const originalLabel = nextStepBtn.innerHTML;
 
@@ -1774,13 +1764,6 @@ function openMainModal() {
     document.getElementById('step3Indicator')?.classList.remove('bg-purple-600','text-white');
     document.getElementById('step2Indicator')?.classList.add('bg-gray-200','text-gray-600');
     document.getElementById('step3Indicator')?.classList.add('bg-gray-200','text-gray-600');
-
-    if (typeof fbq !== 'undefined') {
-        fbq('track', 'ViewContent', {
-            content_name: 'Formulário de Música Personalizada',
-            content_category: 'music_creation'
-        });
-    }
 }
 
 [createSongBtn, howItWorksBtn, bottomCtaBtn].forEach(btn => {

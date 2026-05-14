@@ -193,16 +193,6 @@ async function processarPagamento() {
     try {
         loading?.classList.remove('hidden');
 
-        // Dispara evento Facebook Pixel
-        if (typeof fbq !== 'undefined') {
-            fbq('track', 'AddPaymentInfo', {
-                content_name: 'Checkout Música Personalizada',
-                content_category: 'music_purchase',
-                value: window.currentTotalWithDiscount || 97,
-                currency: 'BRL'
-            });
-        }
-
         // Monta payload com nomes corretos para as APIs
         const payload = {
             leadId: window.currentLeadId || null,

@@ -337,6 +337,17 @@ function mostrarModalPix(data) {
         }
     });
 
+    // ✅ CRÍTICO: Salva dados no localStorage IMEDIATAMENTE quando PIX é gerado
+    // Isso garante que os dados estarão disponíveis mesmo se o usuário recarregar a página
+    localStorage.setItem('purchase_data', JSON.stringify({
+        value: data.valor || window.currentTotalWithDiscount || 97,
+        email: document.getElementById('customerEmail')?.value?.trim() || '',
+        name: document.getElementById('customerName')?.value?.trim() || '',
+        phone: document.getElementById('customerPhone')?.value?.trim() || '',
+        payment_method: 'pix',
+        lead_id: window.currentLeadId
+    }));
+
     // Mostra modal
     modal?.classList.remove('hidden');
 
@@ -383,16 +394,23 @@ function iniciarVerificacaoPagamento(paymentId) {
 
             if (data?.status === 'paid') {
                 clearInterval(interval);
-                // Persiste dados da compra no localStorage para uso na página de sucesso
-                localStorage.setItem('purchase_data', JSON.stringify({
-                    value: window.currentTotalWithDiscount || 97,
-                    email: document.getElementById('customerEmail')?.value?.trim() || '',
-                    name: document.getElementById('customerName')?.value?.trim() || '',
-                    phone: document.getElementById('customerPhone')?.value?.trim() || '',
-                    payment_method: 'pix',
-                    lead_id: window.currentLeadId
-                }));
-                window.location.href = '/sucesso.html';
+                
+                // ✅ CRÍTICO: Verifica se os dados ainda estão no localStorage antes do redirect
+                // Se não estiverem, salva novamente (pode ter sido limpo por timeout ou refresh)
+                const existingData = localStorage.getItem('purchase_data');
+                if (!existingData) {
+                    console.log('[payment] localStorage vazio antes do redirect, re-salvando dados...');
+                    localStorage.setItem('purchase_data', JSON.stringify({
+                        value: window.currentTotalWithDiscount || 97,
+                        email: document.getElementById('customerEmail')?.value?.trim() || '',
+                        name: document.getElementById('customerName')?.value?.trim() || '',
+                        phone: document.getElementById('customerPhone')?.value?.trim() || '',
+                        payment_method: 'pix',
+                        lead_id: window.currentLeadId
+                    }));
+                }
+                
+                window.location.href = '/sucesso';
             }
         } catch (err) {
             console.error('[payment] Erro na verificação:', err);

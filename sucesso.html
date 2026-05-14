@@ -145,79 +145,88 @@
         // EVENTO DE COMPRA - GTM + CAPI
         // ========================================
         (function() {
-            const purchaseData = localStorage.getItem('purchase_data');
-            
-            if (purchaseData) {
-                try {
-                    const data = JSON.parse(purchaseData);
-                    const transactionId = sessionId || orderId || `order_${Date.now()}`;
-                    
-                    // Push para o dataLayer (GTM)
-                    window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push({
-                        'event': 'purchase',
-                        'transaction_id': transactionId,
-                        'value': data.value || 0,
-                        'currency': 'BRL',
-                        'payment_method': data.payment_method || 'unknown',
-                        'items': [{
-                            'item_id': 'musica_personalizada',
-                            'item_name': 'Música Personalizada',
-                            'category': 'music_creation',
-                            'quantity': 1,
-                            'price': data.value || 0
-                        }],
-                        'user_data': {
-                            'email': data.email || '',
-                            'phone': data.phone || '',
-                            'name': data.name || ''
-                        }
-                    });
-                    
-                    console.log('[Purchase] DataLayer push realizado:', {
-                        transaction_id: transactionId,
-                        value: data.value,
-                        payment_method: data.payment_method
-                    });
-                    
-                    // Envia para o endpoint CAPI (Meta Conversions API)
-                    fetch('/api/meta-capi', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            event_name: 'Purchase',
-                            event_data: {
-                                transaction_id: transactionId,
-                                value: data.value || 0,
-                                currency: 'BRL',
-                                content_name: 'Música Personalizada',
-                                content_category: 'music_creation',
-                                payment_method: data.payment_method
-                            },
-                            user_data: {
-                                email: data.email,
-                                phone: data.phone,
-                                name: data.name
+            function triggerPurchaseEvent() {
+                const purchaseData = localStorage.getItem('purchase_data');
+                
+                console.log('[Purchase] Tentando disparar purchase com os dados:', purchaseData);
+                
+                if (purchaseData) {
+                    try {
+                        const data = JSON.parse(purchaseData);
+                        const transactionId = sessionId || orderId || `order_${Date.now()}`;
+                        
+                        // Push para o dataLayer (GTM)
+                        window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                            'event': 'purchase',
+                            'transaction_id': transactionId,
+                            'value': data.value || 0,
+                            'currency': 'BRL',
+                            'payment_method': data.payment_method || 'unknown',
+                            'items': [{
+                                'item_id': 'musica_personalizada',
+                                'item_name': 'Música Personalizada',
+                                'category': 'music_creation',
+                                'quantity': 1,
+                                'price': data.value || 0
+                            }],
+                            'user_data': {
+                                'email': data.email || '',
+                                'phone': data.phone || '',
+                                'name': data.name || ''
                             }
+                        });
+                        
+                        console.log('[Purchase] DataLayer push realizado:', {
+                            transaction_id: transactionId,
+                            value: data.value,
+                            payment_method: data.payment_method
+                        });
+                        
+                        // Envia para o endpoint CAPI (Meta Conversions API)
+                        fetch('/api/meta-capi', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                event_name: 'Purchase',
+                                event_data: {
+                                    transaction_id: transactionId,
+                                    value: data.value || 0,
+                                    currency: 'BRL',
+                                    content_name: 'Música Personalizada',
+                                    content_category: 'music_creation',
+                                    payment_method: data.payment_method
+                                },
+                                user_data: {
+                                    email: data.email,
+                                    phone: data.phone,
+                                    name: data.name
+                                }
+                            })
                         })
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        console.log('[Purchase] CAPI enviado com sucesso:', result);
-                        // Limpa o localStorage após envio bem-sucedido
-                        localStorage.removeItem('purchase_data');
-                    })
-                    .catch(error => {
-                        console.error('[Purchase] Erro ao enviar CAPI:', error);
-                        // Não limpa o localStorage em caso de erro para tentar novamente
-                    });
-                    
-                } catch (error) {
-                    console.error('[Purchase] Erro ao processar dados:', error);
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log('[Purchase] CAPI enviado com sucesso:', result);
+                            // Limpa o localStorage após envio bem-sucedido
+                            localStorage.removeItem('purchase_data');
+                        })
+                        .catch(error => {
+                            console.error('[Purchase] Erro ao enviar CAPI:', error);
+                            // Não limpa o localStorage em caso de erro para tentar novamente
+                        });
+                        
+                    } catch (error) {
+                        console.error('[Purchase] Erro ao processar dados:', error);
+                    }
+                } else {
+                    console.log('[Purchase] Nenhum dado de compra encontrado no localStorage. Tentando novamente em 500ms...');
+                    // Retry após 500ms caso o localStorage ainda não tenha sido preenchido
+                    setTimeout(triggerPurchaseEvent, 500);
                 }
-            } else {
-                console.log('[Purchase] Nenhum dado de compra encontrado no localStorage');
             }
+            
+            // Inicia a tentativa de disparo do evento
+            triggerPurchaseEvent();
         })();
 
         // Efeito de confetti

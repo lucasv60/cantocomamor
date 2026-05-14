@@ -193,6 +193,22 @@ async function processarPagamento() {
     try {
         loading?.classList.remove('hidden');
 
+        // Push dataLayer event for GTM - AddPaymentInfo
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'add_payment_info',
+            'content_name': 'Checkout Música Personalizada',
+            'content_category': 'music_purchase',
+            'value': window.currentTotalWithDiscount || 97,
+            'currency': 'BRL',
+            'payment_method': paymentMethod,
+            'user_data': {
+                'email': document.getElementById('customerEmail')?.value?.trim() || '',
+                'phone': document.getElementById('customerPhone')?.value?.trim() || '',
+                'name': document.getElementById('customerName')?.value?.trim() || ''
+            }
+        });
+
         // Monta payload com nomes corretos para as APIs
         const payload = {
             leadId: window.currentLeadId || null,
@@ -260,6 +276,15 @@ async function processarCartao(payload) {
 
     // Redireciona para o Stripe Checkout
     if (result.url) {
+        // Persiste dados da compra no localStorage para uso na página de sucesso
+        localStorage.setItem('purchase_data', JSON.stringify({
+            value: payload.preco,
+            email: payload.email,
+            name: payload.nome,
+            phone: payload.telefone,
+            payment_method: 'credit_card',
+            lead_id: payload.leadId
+        }));
         window.location.href = result.url;
     } else {
         throw new Error('URL de checkout não recebida');
@@ -336,6 +361,15 @@ function iniciarVerificacaoPagamento(paymentId) {
 
             if (data?.status === 'paid') {
                 clearInterval(interval);
+                // Persiste dados da compra no localStorage para uso na página de sucesso
+                localStorage.setItem('purchase_data', JSON.stringify({
+                    value: window.currentTotalWithDiscount || 97,
+                    email: document.getElementById('customerEmail')?.value?.trim() || '',
+                    name: document.getElementById('customerName')?.value?.trim() || '',
+                    phone: document.getElementById('customerPhone')?.value?.trim() || '',
+                    payment_method: 'pix',
+                    lead_id: window.currentLeadId
+                }));
                 window.location.href = '/sucesso.html';
             }
         } catch (err) {

@@ -470,6 +470,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Salva lead no Supabase antes de gerar a letra
         saveLead().catch(err => console.error('[LEAD] Falha ao salvar:', err));
 
+        // Push dataLayer event for GTM - InitiateCheckout
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'initiate_checkout',
+            'content_name': 'Geração de Letra',
+            'content_category': 'music_creation',
+            'value': window.currentBasePrice || 97.00,
+            'currency': 'BRL',
+            'user_data': {
+                'email': window.userData?.email || '',
+                'phone': window.userData?.telefone || '',
+                'name': window.userData?.nome_completo || ''
+            }
+        });
+
         const useOwnLyric = document.getElementById('useMessageAsLyric')?.checked;
         const originalLabel = nextStepBtn.innerHTML;
 
@@ -1753,6 +1768,14 @@ function openMainModal() {
     // ✅ Usa style.display em vez de classList (evita conflito com observers)
     modalEl.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+
+    // Push dataLayer event for GTM - ViewContent
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'view_content',
+        'content_name': 'Formulário de Música Personalizada',
+        'content_category': 'music_creation'
+    });
 
     // garante que sempre abre no passo 1
     document.getElementById('step1Content')?.classList.remove('hidden');

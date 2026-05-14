@@ -470,10 +470,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Salva lead no Supabase antes de gerar a letra
         saveLead().catch(err => console.error('[LEAD] Falha ao salvar:', err));
 
-        // Push dataLayer event for GTM - InitiateCheckout
+        // Push dataLayer event for GTM - AddToCart
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
-            'event': 'initiate_checkout',
+            'event': 'add_to_cart',
             'content_name': 'Geração de Letra',
             'content_category': 'music_creation',
             'value': window.currentBasePrice || 97.00,

@@ -193,10 +193,10 @@ async function processarPagamento() {
     try {
         loading?.classList.remove('hidden');
 
-        // Push dataLayer event for GTM - AddPaymentInfo
+        // Push dataLayer event for GTM - InitiateCheckout
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
-            'event': 'add_payment_info',
+            'event': 'initiate_checkout',
             'content_name': 'Checkout Música Personalizada',
             'content_category': 'music_purchase',
             'value': window.currentTotalWithDiscount || 97,
@@ -314,6 +314,22 @@ function mostrarModalPix(data) {
     if (pixValue && data.valor) {
         pixValue.textContent = `R$ ${parseFloat(data.valor).toFixed(2).replace('.', ',')}`;
     }
+
+    // Push dataLayer event for GTM - AddPaymentInfo (payment confirmed/QR displayed)
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'add_payment_info',
+        'content_name': 'Checkout Música Personalizada',
+        'content_category': 'music_purchase',
+        'value': data.valor || window.currentTotalWithDiscount || 97,
+        'currency': 'BRL',
+        'payment_method': 'pix',
+        'user_data': {
+            'email': document.getElementById('customerEmail')?.value?.trim() || '',
+            'phone': document.getElementById('customerPhone')?.value?.trim() || '',
+            'name': document.getElementById('customerName')?.value?.trim() || ''
+        }
+    });
 
     // Mostra modal
     modal?.classList.remove('hidden');

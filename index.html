@@ -725,7 +725,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <div class="text-gray-700 font-semibold text-sm">Preço com desconto:</div>
                         <div class="flex items-center gap-1.5">
                             <span class="bg-green-500 text-white text-xs font-bold px-1.5 py-0.5 rounded savings_percentage">-75%</span>
-                            <span class="price-discount discounted_price text-xl font-bold">R$ 5,00</span>
+                            <span class="price-discount discounted_price text-xl font-bold">R$ 97,00</span>
                         </div>
                     </div>
                     <div class="bg-green-100 border border-green-300 rounded-lg p-1.5 text-center">
@@ -740,7 +740,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="bg-white border border-gray-200 rounded-lg p-3 mb-4 text-sm">
                     <div class="flex justify-between py-1.5 border-b border-gray-100">
                         <span class="text-gray-700">Música Personalizada</span>
-                        <span class="font-medium music_price">R$ 5,00</span>
+                        <span class="font-medium music_price">R$ 97,00</span>
                     </div>
                     <div class="flex justify-between py-1.5 border-b border-gray-100">
                         <span class="text-gray-500">MP3 de Alta Qualidade</span>
@@ -823,11 +823,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <span class="text-sm font-medium">Cartão</span>
                             <span class="text-xs text-gray-500">Em até 12x</span>
                         </button>
-                        <button type="button" class="payment-method-btn rounded-lg p-3 flex flex-col items-center" data-method="boleto">
-                            <i class="fas fa-barcode method-icon text-2xl mb-1 text-gray-500"></i>
-                            <span class="text-sm font-medium">Boleto</span>
-                            <span class="text-xs text-gray-500">1-3 dias</span>
-                        </button>
                     </div>
                     <input type="hidden" id="selectedPaymentMethod" value="pix">
                 </div>
@@ -855,7 +850,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-1 text-xs font-medium">Parcelas</label>
-                                    <select id="installments" class="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 text-sm"><option value="1">1x R$5</option></select>
+                                    <select id="installments" class="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-300 text-sm"><option value="1">1x R$97</option></select>
                                 </div>
                             </div>
                             <p id="installmentInfo" class="text-xs text-gray-500 mt-1"></p>
@@ -969,69 +964,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 </div>
 
-<!-- Modal Boleto Appmax -->
-<div id="boletoModal" class="fixed inset-0 pix-modal-overlay hidden flex items-center justify-center p-4 z-[100]">
-    <div class="pix-qr-container max-w-sm w-full p-5">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center">
-                <i class="fas fa-barcode text-pink-300 text-xl mr-2"></i>
-                <h3 class="text-lg font-bold text-gray-800">Pagamento via Boleto</h3>
-            </div>
-            <button id="closeBoletoModal" class="text-gray-400 hover:text-gray-600 transition">
-                <i class="fas fa-times text-lg"></i>
-            </button>
-        </div>
-
-        <!-- Valor -->
-        <div class="text-center bg-pink-50 rounded-lg p-3 mb-4">
-            <p class="text-xs text-gray-600">Valor:</p>
-            <p id="boletoValue" class="text-xl font-bold text-pink-400">R$ 0,00</p>
-        </div>
-
-        <!-- Código de Barras -->
-        <div class="mb-4">
-            <label class="block text-xs font-medium text-gray-700 mb-1">Código de barras:</label>
-            <div class="flex flex-col gap-2">
-                <input type="text" id="boletoBarcode" readonly="" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-xs text-gray-600 truncate">
-                <button id="copyBoletoBtn" class="copy-btn w-full py-3 bg-pink-300 text-white rounded-lg hover:bg-pink-400 transition flex items-center justify-center gap-2 text-sm font-medium">
-                    <i class="fas fa-copy"></i>
-                    <span>Copiar Código de Barras</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Botão Abrir Boleto -->
-        <a id="boletoOpenLink" href="#" target="_blank" class="block w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-center font-medium mb-4">
-            <i class="fas fa-external-link-alt mr-2"></i>
-            Abrir Boleto em PDF
-        </a>
-
-        <!-- Instruções -->
-        <div class="bg-blue-50 rounded-lg p-3 mb-4">
-            <h4 class="font-semibold text-blue-800 mb-1 text-sm">Como pagar:</h4>
-            <ol class="text-xs text-blue-700 space-y-0.5">
-                <li>1. Copie o código de barras ou abra o PDF</li>
-                <li>2. Acesse o app do seu banco</li>
-                <li>3. Escolha pagar boleto</li>
-                <li>4. Cole o código ou escaneie o boleto</li>
-            </ol>
-        </div>
-
-        <!-- Aviso de Prazo -->
-        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-2 mb-3">
-            <p class="text-xs text-yellow-700 text-center">
-                <i class="fas fa-clock mr-1"></i>
-                O pagamento será confirmado em até <strong>3 dias úteis</strong>
-            </p>
-        </div>
-
-        <!-- Botão Fechar -->
-        <button onclick="closeBoletoModal()" class="w-full py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition text-sm">
-            Fechar
-        </button>
-    </div>
-</div>
 
 <!-- Modal de Resultado do Pagamento (Análise/Recusado) -->
 <div id="paymentResultModal" class="fixed inset-0 pix-modal-overlay hidden flex items-center justify-center p-4 z-[100]">
@@ -1130,12 +1062,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="mb-6">
                 <h4 class="font-bold text-lg mb-2">Resumo do Pedido</h4>
                 <div class="bg-gray-50 p-4 rounded-lg">
-                    <div class="flex justify-between mb-2"><span>Música Personalizada</span><span class="music_price">R$ 5,00</span></div>
+                    <div class="flex justify-between mb-2"><span>Música Personalizada</span><span class="music_price">R$ 97,00</span></div>
                     <div class="flex justify-between mb-2"><span>MP3 de Alta Qualidade</span><span>Incluído</span></div>
                     <div class="flex justify-between mb-2"><span>Letras Personalizadas</span><span>Incluído</span></div>
                     <div class="flex justify-between mb-2"><span>Até 2 revisões gratis</span><span>Incluído</span></div>
                     <div class="border-t border-gray-200 pt-2 mt-2">
-                        <div class="flex justify-between font-bold"><span>Total</span><span class="music_price">R$ 5,00</span></div>
+                        <div class="flex justify-between font-bold"><span>Total</span><span class="music_price">R$ 97,00</span></div>
                     </div>
                 </div>
             </div>

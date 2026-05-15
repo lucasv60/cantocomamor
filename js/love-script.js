@@ -213,7 +213,7 @@ function buildPriceQuery() {
     const u = new URLSearchParams(window.location.search);
     if (u.has("pm")) return `pm=${encodeURIComponent(u.get("pm"))}`;
     if (u.has("p"))  return `p=${encodeURIComponent(u.get("p"))}`;
-    return "p=5";
+    return "p=97";
 }
 
 // === MÁSCARA DO TELEFONE (precisa existir antes de syncPhoneHidden) ===
@@ -1307,7 +1307,8 @@ link.href = canvas.toDataURL();
     const prices = {
         p01829128839102: 3,
         p03: 57.00,  p02: 67.00,  p01: 77.00,  p0: 87.00,
-        p1: 8.00,   // Preço base alterado para R$ 8,00 (mínimo Asaas R$ 5,00)
+        p1: 8.00,   // Preço base alterado para R$ 8,00 (mínimo Asaas R$ 97,00)
+        p97: 97.00,
         p6: 147.00,  p7: 157.00, p8: 167.00, p9: 177.00, p10: 187.00,
         p11: 197.00, p12: 207.00, p13: 217.00, p14: 227.00, p15: 237.00,
         p16: 247.00, p17: 257.00, p18: 267.00, p19: 277.00, p20: 287.00,
@@ -1323,6 +1324,7 @@ link.href = canvas.toDataURL();
         p01829128839102: 49.00,
         p03: 199.00,  p02: 199.00,  p01: 199.00,  p0: 199.00,
         p1: 249.00,   p3: 249.00,  p4: 249.00,  p5: 349.00,
+        p97: 397.00,
         p6: 649.00,   p7: 749.00,  p8: 799.00,  p9: 849.00,  p10: 899.00,
         p11: 949.00,  p12: 999.00, p13: 1049.00, p14: 1099.00, p15: 1149.00,
         p16: 1199.00, p17: 1249.00, p18: 1299.00, p19: 1349.00, p20: 1399.00,
@@ -1356,12 +1358,12 @@ link.href = canvas.toDataURL();
             if (/^p\d+$/.test(v))  return v;                                          // p5
             if (/^\d+$/.test(v))   return `p${parseInt(v,10)}`;                        // 5
         }
-        return "p5";
+        return "p97";
     }
 
     const priceKey = normalizePriceKeyFromURL();
-    const basePrice     = prices[priceKey] ?? prices["p5"];
-    const originalPrice = originalPrices[priceKey] ?? originalPrices["p5"];
+    const basePrice     = prices[priceKey] ?? prices["p97"];
+    const originalPrice = originalPrices[priceKey] ?? originalPrices["p97"];
 
     // Deixa acessível se precisar em outro lugar
     window.currentBasePrice = basePrice;

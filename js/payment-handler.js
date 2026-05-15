@@ -20,7 +20,7 @@ const PRIORITARY_FEE = 19.90;
 function updatePricesWithPixDiscount() {
     const isPix = window.selectedPaymentMethod === 'pix';
     const prioritaryChecked = document.getElementById('prioritaryDelivery')?.checked || false;
-    const basePrice = Number(window.currentBasePrice) || 5;
+    const basePrice = Number(window.currentBasePrice) || 97;
     const prioritaryFee = prioritaryChecked ? PRIORITARY_FEE : 0;
     const subtotal = basePrice + prioritaryFee;
 

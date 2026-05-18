@@ -213,7 +213,7 @@ function buildPriceQuery() {
     const u = new URLSearchParams(window.location.search);
     if (u.has("pm")) return `pm=${encodeURIComponent(u.get("pm"))}`;
     if (u.has("p"))  return `p=${encodeURIComponent(u.get("p"))}`;
-    return "p=97";
+    return "p=47";
 }
 
 // === MÁSCARA DO TELEFONE (precisa existir antes de syncPhoneHidden) ===
@@ -479,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'event_id': addToCartEventId,
             'content_name': 'Geração de Letra',
             'content_category': 'music_creation',
-            'value': window.currentBasePrice || 97.00,
+            'value': window.currentBasePrice || 47.00,
             'currency': 'BRL',
             'user_data': {
                 'email': window.userData?.email || '',
@@ -1317,7 +1317,8 @@ link.href = canvas.toDataURL();
         p31: 397.00, p32: 407.00, p33: 417.00, p34: 427.00, p35: 437.00,
         p36: 447.00, p37: 457.00, p38: 467.00, p39: 477.00, p40: 487.00,
         p41: 497.00, p42: 507.00, p43: 517.00, p44: 527.00, p45: 537.00,
-        p46: 547.00
+        p46: 547.00,
+        p47: 47.00
     };
 
     const originalPrices = {
@@ -1333,7 +1334,8 @@ link.href = canvas.toDataURL();
         p31: 1949.00, p32: 1999.00, p33: 2049.00, p34: 2099.00, p35: 2149.00,
         p36: 2199.00, p37: 2249.00, p38: 2299.00, p39: 2349.00, p40: 2399.00,
         p41: 2449.00, p42: 2499.00, p43: 2549.00, p44: 2599.00, p45: 2649.00,
-        p46: 2699.00
+        p46: 2699.00,
+        p47: 150.00
     };
 
     const PRIORITARY_FEE = 19.90;
@@ -1358,7 +1360,7 @@ link.href = canvas.toDataURL();
             if (/^p\d+$/.test(v))  return v;                                          // p5
             if (/^\d+$/.test(v))   return `p${parseInt(v,10)}`;                        // 5
         }
-        return "p97";
+        return "p47";
     }
 
     const priceKey = normalizePriceKeyFromURL();
@@ -1637,7 +1639,8 @@ document.addEventListener('DOMContentLoaded', function () {
         p43: 517.00,
         p44: 527.00,
         p45: 537.00,
-        p46: 547.00
+        p46: 547.00,
+        p47: 47.00
     };
 
     // Preços originais de referência (para mostrar o desconto)
@@ -1691,7 +1694,8 @@ document.addEventListener('DOMContentLoaded', function () {
         p43: 2549.00,
         p44: 2599.00,
         p45: 2649.00,
-        p46: 2699.00
+        p46: 2699.00,
+        p47: 150.00
     };
 
     function normalizePriceKeyFromURL() {
@@ -1712,7 +1716,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (/^p\d+$/.test(v))  return v;
             if (/^\d+$/.test(v))   return `p${parseInt(v,10)}`;
         }
-        return "p5";
+        return "p47";
     }
 
     const priceKey = normalizePriceKeyFromURL();

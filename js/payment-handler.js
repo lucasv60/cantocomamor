@@ -20,7 +20,7 @@ const PRIORITARY_FEE = 19.90;
 function updatePricesWithPixDiscount() {
     const isPix = window.selectedPaymentMethod === 'pix';
     const prioritaryChecked = document.getElementById('prioritaryDelivery')?.checked || false;
-    const basePrice = Number(window.currentBasePrice) || 97;
+    const basePrice = Number(window.currentBasePrice) || 47;
     const prioritaryFee = prioritaryChecked ? PRIORITARY_FEE : 0;
     const subtotal = basePrice + prioritaryFee;
 
@@ -208,7 +208,7 @@ async function processarPagamento() {
             'event_id': initiateCheckoutEventId,
             'content_name': 'Checkout Música Personalizada',
             'content_category': 'music_purchase',
-            'value': window.currentTotalWithDiscount || 97,
+            'value': window.currentTotalWithDiscount || 47,
             'currency': 'BRL',
             'payment_method': paymentMethod,
             'user_data': {
@@ -230,7 +230,7 @@ async function processarPagamento() {
             telefone: document.getElementById('customerPhone')?.value?.trim() || '',
             destinatario: document.getElementById('recipient')?.value?.trim() || '',
             estilo: document.getElementById('genre')?.value || '',
-            preco: window.currentTotalWithDiscount || 97,
+            preco: window.currentTotalWithDiscount || 47,
             prioritaryDelivery: document.getElementById('prioritaryDelivery')?.checked || false
         };
 
@@ -336,7 +336,7 @@ function mostrarModalPix(data) {
         'event_id': addPaymentInfoEventId,
         'content_name': 'Checkout Música Personalizada',
         'content_category': 'music_purchase',
-        'value': data.valor || window.currentTotalWithDiscount || 97,
+        'value': data.valor || window.currentTotalWithDiscount || 47,
         'currency': 'BRL',
         'payment_method': 'pix',
         'user_data': {
@@ -352,7 +352,7 @@ function mostrarModalPix(data) {
     // ✅ CRÍTICO: Salva dados no localStorage IMEDIATAMENTE quando PIX é gerado
     // Isso garante que os dados estarão disponíveis mesmo se o usuário recarregar a página
     localStorage.setItem('purchase_data', JSON.stringify({
-        value: data.valor || window.currentTotalWithDiscount || 97,
+        value: data.valor || window.currentTotalWithDiscount || 47,
         email: document.getElementById('customerEmail')?.value?.trim() || '',
         name: document.getElementById('customerName')?.value?.trim() || '',
         phone: document.getElementById('customerPhone')?.value?.trim() || '',
@@ -413,7 +413,7 @@ function iniciarVerificacaoPagamento(paymentId) {
                 if (!existingData) {
                     console.log('[payment] localStorage vazio antes do redirect, re-salvando dados...');
                     localStorage.setItem('purchase_data', JSON.stringify({
-                        value: window.currentTotalWithDiscount || 97,
+                        value: window.currentTotalWithDiscount || 47,
                         email: document.getElementById('customerEmail')?.value?.trim() || '',
                         name: document.getElementById('customerName')?.value?.trim() || '',
                         phone: document.getElementById('customerPhone')?.value?.trim() || '',

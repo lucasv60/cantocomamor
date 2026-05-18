@@ -21,6 +21,8 @@ export default async function handler(req, res) {
             leadId,
             email,
             nome,
+            telefone,
+            cpf,
             destinatario,
             estilo,
             preco,
@@ -70,6 +72,8 @@ export default async function handler(req, res) {
                 leadId: leadId || '',
                 email: email,
                 nome: nome || '',
+                telefone: telefone || '',
+                cpf: cpf || '',
                 destinatario: destinatario || '',
                 estilo: estilo || '',
                 prioritaryDelivery: prioritaryDelivery ? 'true' : 'false'

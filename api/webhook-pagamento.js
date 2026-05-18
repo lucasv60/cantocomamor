@@ -110,6 +110,7 @@ async function handleStripeWebhook(req, res, signature, rawBody) {
         if (leadId) {
             // Atualiza o lead no Supabase
             await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}`, 'PATCH', {
+                status: 'paid',
                 status_pagamento: 'pago',
                 gateway: 'stripe',
                 gateway_payment_id: session.payment_intent,
@@ -118,6 +119,38 @@ async function handleStripeWebhook(req, res, signature, rawBody) {
             });
 
             console.log('[webhook-pagamento] Stripe - Lead atualizado:', leadId);
+
+            // Busca dados completos do lead para inserir na tabela pedidos
+            try {
+                const leads = await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}&select=*`, 'GET');
+                if (leads && leads.length > 0) {
+                    const lead = leads[0];
+                    await supabaseRequest('/rest/v1/pedidos', 'POST', {
+                        lead_id: leadId,
+                        email: lead.email || session.metadata?.email || '',
+                        nome_cliente: lead.nome_completo || session.metadata?.nome || '',
+                        telefone: lead.telefone || session.metadata?.telefone || '',
+                        cpf: session.metadata?.cpf || '',
+                        destinatario: lead.destinatario || session.metadata?.destinatario || '',
+                        estilo: lead.estilo || session.metadata?.estilo || '',
+                        ocasiao: lead.ocasiao || '',
+                        relacionamento: lead.relacionamento || '',
+                        mensagem: lead.mensagem || '',
+                        vocal_gender: lead.vocal_gender || 'm',
+                        letra_final: lead.letra_gerada || '',
+                        titulo_musica: lead.titulo_musica || '',
+                        metodo_pagamento: 'credit_card',
+                        preco_base: session.amount_total / 100,
+                        preco_total: session.amount_total / 100,
+                        status_pagamento: 'aprovado',
+                        gateway: 'stripe',
+                        gateway_payment_id: session.payment_intent
+                    });
+                    console.log('[webhook-pagamento] Stripe - Pedido criado para lead:', leadId);
+                }
+            } catch (err) {
+                console.error('[webhook-pagamento] Stripe - Erro ao criar pedido:', leadId, err.message);
+            }
         }
     }
 
@@ -158,8 +191,36 @@ async function handleAsaasWebhook(req, res, rawBody) {
                     atualizado_em: new Date().toISOString()
                 });
                 console.log('[webhook-pagamento] Asaas - Lead atualizado:', leadId, JSON.stringify(result));
+
+                // Busca dados completos do lead para inserir na tabela pedidos
+                const leads = await supabaseRequest(`/rest/v1/leads?id=eq.${leadId}&select=*`, 'GET');
+                if (leads && leads.length > 0) {
+                    const lead = leads[0];
+                    await supabaseRequest('/rest/v1/pedidos', 'POST', {
+                        lead_id: leadId,
+                        email: lead.email || '',
+                        nome_cliente: lead.nome_completo || '',
+                        telefone: lead.telefone || '',
+                        cpf: '',
+                        destinatario: lead.destinatario || '',
+                        estilo: lead.estilo || '',
+                        ocasiao: lead.ocasiao || '',
+                        relacionamento: lead.relacionamento || '',
+                        mensagem: lead.mensagem || '',
+                        vocal_gender: lead.vocal_gender || 'm',
+                        letra_final: lead.letra_gerada || '',
+                        titulo_musica: lead.titulo_musica || '',
+                        metodo_pagamento: 'pix',
+                        preco_base: payment.value,
+                        preco_total: payment.value,
+                        status_pagamento: 'aprovado',
+                        gateway: 'asaas',
+                        gateway_payment_id: payment.id
+                    });
+                    console.log('[webhook-pagamento] Asaas - Pedido criado para lead:', leadId);
+                }
             } catch (err) {
-                console.error('[webhook-pagamento] Erro ao atualizar lead:', leadId, err.message);
+                console.error('[webhook-pagamento] Erro ao processar pagamento:', leadId, err.message);
             }
         }
     }

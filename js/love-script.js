@@ -1,4 +1,6 @@
 let step1FormData = {};
+// Estado original dos campos do Step 1 para detectar mudanças (usado na recuperação de lead)
+let step1OriginalState = null;
 // Configurações de EmailJS - lidas de api-config.js
 const EMAIL_SERVICE = window.API_CONFIG?.emailjs?.serviceId || '';
 const EMAIL_TEMPLATE_LETRA = window.API_CONFIG?.emailjs?.templateId || '';
@@ -73,32 +75,56 @@ async function saveLead() {
     }
 
     try {
-        const { data, error } = await supabaseClient
-            .from('leads')
-            .insert([leadData])
-            .select();
+        let result;
 
-        if (error) {
-            console.error('[LEAD] Erro ao salvar:', error);
-            return null;
-        }
+        if (window.currentLeadId) {
+            // MODO UPDATE: Lead já existe, atualiza registro
+            console.log('[LEAD] Modo UPDATE - atualizando lead existente:', window.currentLeadId);
+            const { data, error } = await supabaseClient
+                .from('leads')
+                .update(leadData)
+                .eq('id', window.currentLeadId)
+                .select();
 
-        console.log('[LEAD] Salvo com sucesso:', data[0]?.id);
-        window.currentLeadId = data[0]?.id;
-
-        // Injeta o ID do lead na URL para recuperação via WhatsApp
-        if (data[0]?.id) {
-            try {
-                const url = new URL(window.location);
-                url.searchParams.set('lead', data[0].id);
-                history.pushState({ leadId: data[0].id }, '', url.toString());
-                console.log('[LEAD] URL atualizada com lead ID:', data[0].id);
-            } catch (urlErr) {
-                console.warn('[LEAD] Não foi possível atualizar URL:', urlErr);
+            if (error) {
+                console.error('[LEAD] Erro ao atualizar:', error);
+                return null;
             }
+
+            result = data[0];
+            console.log('[LEAD] Atualizado com sucesso:', result?.id);
+        } else {
+            // MODO INSERT: Novo lead, cria registro
+            console.log('[LEAD] Modo INSERT - criando novo lead');
+            const { data, error } = await supabaseClient
+                .from('leads')
+                .insert([leadData])
+                .select();
+
+            if (error) {
+                console.error('[LEAD] Erro ao salvar:', error);
+                return null;
+            }
+
+            result = data[0];
+            window.currentLeadId = result?.id;
+
+            // Injeta o ID do lead na URL para recuperação via WhatsApp
+            if (result?.id) {
+                try {
+                    const url = new URL(window.location);
+                    url.searchParams.set('lead', result.id);
+                    history.pushState({ leadId: result.id }, '', url.toString());
+                    console.log('[LEAD] URL atualizada com lead ID:', result.id);
+                } catch (urlErr) {
+                    console.warn('[LEAD] Não foi possível atualizar URL:', urlErr);
+                }
+            }
+
+            console.log('[LEAD] Salvo com sucesso:', result?.id);
         }
 
-        return data[0];
+        return result;
     } catch (err) {
         console.error('[LEAD] Erro inesperado:', err);
         return null;
@@ -490,8 +516,61 @@ document.addEventListener('DOMContentLoaded', function() {
         window.userData.email = document.getElementById('customerEmail')?.value?.trim() || '';
         window.userData.telefone = getPhone()?.e164 || '';
 
-        // Salva lead no Supabase antes de gerar a letra
-        saveLead().catch(err => console.error('[LEAD] Falha ao salvar:', err));
+        // =============================================
+        // DETECTOR DE MUDANÇAS - Cenário A vs B
+        // =============================================
+        const currentDestinatario = document.getElementById('recipient')?.value?.trim() || '';
+        const currentEstilo = document.getElementById('genre')?.value || '';
+        const currentMensagem = document.getElementById('message')?.value?.trim() || '';
+
+        const hasExistingLyric = window.generatedLyric && window.generatedLyric.trim().length > 0;
+        const hasOriginalState = step1OriginalState !== null;
+
+        let dataChanged = false;
+        if (hasOriginalState) {
+            dataChanged = (
+                currentDestinatario !== step1OriginalState.destinatario ||
+                currentEstilo !== step1OriginalState.estilo ||
+                currentMensagem !== step1OriginalState.mensagem
+            );
+        }
+
+        console.log('[CHANGE-DETECTOR] Estado:', {
+            hasExistingLyric,
+            hasOriginalState,
+            dataChanged,
+            currentLeadId: window.currentLeadId
+        });
+
+        // CENÁRIO A: Letra existe e dados NÃO mudaram → pula geração
+        if (hasExistingLyric && hasOriginalState && !dataChanged) {
+            console.log('[CHANGE-DETECTOR] Cenário A: Dados inalterados - pulando regeneração');
+            
+            // Salva lead (UPDATE se já existe)
+            await saveLead();
+            
+            // Vai direto para Step 3
+            goToStep3();
+            return;
+        }
+
+        // CENÁRIO B: Dados mudaram OU não tem letra → regenerar
+        if (dataChanged && hasExistingLyric) {
+            console.log('[CHANGE-DETECTOR] Cenário B: Dados alterados - limpando letra antiga');
+            window.generatedLyric = '';
+            window.generatedTitle = '';
+            window.lastGeneratedLyric = '';
+        }
+
+        // Salva lead no Supabase antes de gerar a letra (UPDATE ou INSERT)
+        await saveLead();
+
+        // Atualiza estado original após salvar
+        step1OriginalState = {
+            destinatario: currentDestinatario,
+            estilo: currentEstilo,
+            mensagem: currentMensagem
+        };
 
         // Push dataLayer event for GTM - AddToCart
         window.dataLayer = window.dataLayer || [];
@@ -2166,6 +2245,14 @@ function restoreGlobalState(leadData) {
         mensagem:       leadData.mensagem || '',
         preco:          document.getElementById('priceRef')?.value?.replace('_', ',') || ''
     };
+
+    // Salva estado original dos campos para detectar mudanças futuras
+    step1OriginalState = {
+        destinatario: leadData.destinatario || '',
+        estilo: leadData.estilo || '',
+        mensagem: leadData.mensagem || ''
+    };
+    console.log('[RESTORE] Estado original salvo para detecção de mudanças');
 
     // Restaura letra gerada (se existir)
     if (leadData.letra_gerada) {

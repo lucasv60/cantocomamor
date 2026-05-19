@@ -85,6 +85,19 @@ async function saveLead() {
 
         console.log('[LEAD] Salvo com sucesso:', data[0]?.id);
         window.currentLeadId = data[0]?.id;
+
+        // Injeta o ID do lead na URL para recuperação via WhatsApp
+        if (data[0]?.id) {
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set('lead', data[0].id);
+                history.pushState({ leadId: data[0].id }, '', url.toString());
+                console.log('[LEAD] URL atualizada com lead ID:', data[0].id);
+            } catch (urlErr) {
+                console.warn('[LEAD] Não foi possível atualizar URL:', urlErr);
+            }
+        }
+
         return data[0];
     } catch (err) {
         console.error('[LEAD] Erro inesperado:', err);
@@ -263,6 +276,16 @@ if (previewAudio) {
 }
 // Adicionando funcionalidade para os 3 steps
 document.addEventListener('DOMContentLoaded', function() {
+    // =============================================
+    // RECUPERAÇÃO DE LEAD VIA URL (WhatsApp Recovery)
+    // =============================================
+    // Verifica se existe parâmetro 'lead' na URL e restaura o estado do checkout
+    if (typeof initLeadRecovery === 'function') {
+        initLeadRecovery().catch(err => {
+            console.error('[RESTORE] Erro na inicialização da recuperação:', err);
+        });
+    }
+
     const step1Content = document.getElementById('step1Content');
     const step2Content = document.getElementById('step2Content');
     const step3Content = document.getElementById('step3Content');
@@ -703,6 +726,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para gerar a letra da música (simulação)
     // Função para gerar a letra da música (step 2)
     async function generateLyrics() {
+        // =============================================
+        // PROTEÇÃO: Se letra já existe (recuperada via URL), pula geração
+        // =============================================
+        if (window.generatedLyric && window.generatedLyric.trim().length > 0) {
+            console.log('[LYRICS] Letra já existe no estado recuperado - pulando nova chamada de API');
+            const lyricsArea = document.getElementById('generatedLyrics');
+            const titleEl = document.getElementById('songTitle');
+
+            if (lyricsArea) {
+                lyricsArea.value = window.generatedLyric;
+                lyricsArea.classList.remove('hidden');
+            }
+            if (titleEl && window.generatedTitle) {
+                titleEl.textContent = window.generatedTitle;
+            }
+
+            // Ativa o botão "Continuar" após restaurar a letra
+            checkStep2Completion();
+
+            // Executa a transição natural para o Step 3 sem re-gerar
+            goToStep3();
+            return;
+        }
+
         const payload = {
             destinatario: document.getElementById("recipient").value,
             email:        document.getElementById("customerEmail").value,
@@ -1957,3 +2004,265 @@ document.addEventListener('DOMContentLoaded', function() {
     // As setas do mockup controlam a troca de depoimentos
     console.log('✅ Depoimentos sincronizados com o Player');
 });
+
+// =============================================
+// SISTEMA DE RECUPERAÇÃO DE CHECKOUT VIA URL
+// =============================================
+
+/**
+ * Busca os dados do lead no Supabase caso exista o parâmetro 'lead' na URL.
+ * @returns {Object|null} Dados do lead ou null se não encontrado
+ */
+async function restoreLeadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const leadId = params.get('lead');
+
+    if (!leadId) {
+        console.log('[RESTORE] Sem parâmetro lead na URL - fluxo normal');
+        return null;
+    }
+
+    console.log('[RESTORE] Lead ID encontrado na URL:', leadId);
+
+    const supabaseClient = window.API_CONFIG?.supabaseClient;
+    if (!supabaseClient) {
+        console.warn('[RESTORE] Supabase não disponível');
+        return null;
+    }
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('leads')
+            .select('*')
+            .eq('id', leadId)
+            .single();
+
+        if (error) {
+            console.error('[RESTORE] Erro ao buscar lead:', error);
+            // Limpa parâmetro inválido da URL
+            clearLeadFromURL();
+            return null;
+        }
+
+        if (!data) {
+            console.warn('[RESTORE] Lead não encontrado no banco');
+            clearLeadFromURL();
+            return null;
+        }
+
+        console.log('[RESTORE] Lead recuperado com sucesso:', data);
+        return data;
+    } catch (err) {
+        console.error('[RESTORE] Erro inesperado ao buscar lead:', err);
+        clearLeadFromURL();
+        return null;
+    }
+}
+
+/**
+ * Remove o parâmetro 'lead' da URL quando o ID é inválido ou não encontrado.
+ */
+function clearLeadFromURL() {
+    try {
+        const url = new URL(window.location);
+        url.searchParams.delete('lead');
+        history.replaceState({}, '', url.toString());
+        console.log('[RESTORE] Parâmetro lead removido da URL');
+    } catch (err) {
+        console.warn('[RESTORE] Não foi possível limpar URL:', err);
+    }
+}
+
+/**
+ * Preenche todos os campos do formulário com os dados do lead
+ * e dispara eventos de input/change para atualizar validações.
+ * @param {Object} leadData - Dados do lead recuperados do Supabase
+ */
+function restoreFormState(leadData) {
+    console.log('[RESTORE] Restaurando estado do formulário...');
+
+    // Mapeamento de campos do formulário para colunas do Supabase
+    const fieldMap = {
+        'recipient':        leadData.destinatario,
+        'relationship':     leadData.relacionamento,
+        'occasion':         leadData.ocasiao,
+        'genre':            leadData.estilo,
+        'message':          leadData.mensagem,
+        'customerFullName': leadData.nome_completo,
+        'customerPhone':    leadData.telefone,
+        'customerEmail':    leadData.email
+    };
+
+    // Preenche cada campo e dispara eventos
+    Object.entries(fieldMap).forEach(([fieldId, value]) => {
+        const el = document.getElementById(fieldId);
+        if (el && value) {
+            el.value = value;
+            // Dispara eventos para validação em tempo real e listeners
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log(`[RESTORE] Campo ${fieldId} preenchido`);
+        }
+    });
+
+    // Vocal Gender (radio button)
+    if (leadData.vocal_gender) {
+        const radio = document.querySelector(
+            `input[name="vocalGender"][value="${leadData.vocal_gender}"]`
+        );
+        if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log('[RESTORE] Vocal gender definido:', leadData.vocal_gender);
+        }
+    }
+
+    // Atualiza máscara de telefone (IMask)
+    if (typeof phoneMask !== 'undefined' && phoneMask && leadData.telefone) {
+        try {
+            phoneMask.value = leadData.telefone;
+            console.log('[RESTORE] Máscara de telefone atualizada');
+        } catch (maskErr) {
+            console.warn('[RESTORE] Erro ao atualizar máscara:', maskErr);
+        }
+    }
+
+    // Sincroniza telefone formatado
+    if (typeof syncPhoneHidden === 'function') {
+        syncPhoneHidden();
+    }
+
+    // Atualiza validação em tempo real
+    if (typeof checkFormCompletion === 'function') {
+        checkFormCompletion();
+    }
+
+    console.log('[RESTORE] Estado do formulário restaurado');
+}
+
+/**
+ * Sincroniza as variáveis de controle do checkout e o payload de formulário.
+ * @param {Object} leadData - Dados do lead recuperados do Supabase
+ */
+function restoreGlobalState(leadData) {
+    console.log('[RESTORE] Restaurando variáveis globais...');
+
+    // ID do lead (CRÍTICO para pagamento)
+    window.currentLeadId = leadData.id;
+
+    // Recalcula preços com desconto PIX
+    if (typeof updatePricesWithPixDiscount === 'function') {
+        updatePricesWithPixDiscount();
+    }
+
+    // Restaura payload do formulário para emails
+    step1FormData = {
+        destinatario:   leadData.destinatario || '',
+        email:          leadData.email || '',
+        telefone:       leadData.telefone || '',
+        estilo:         leadData.estilo || '',
+        ocasiao:        leadData.ocasiao || '',
+        relacionamento: leadData.relacionamento || '',
+        mensagem:       leadData.mensagem || '',
+        preco:          document.getElementById('priceRef')?.value?.replace('_', ',') || ''
+    };
+
+    // Restaura letra gerada (se existir)
+    if (leadData.letra_gerada) {
+        window.generatedLyric = leadData.letra_gerada;
+        window.generatedTitle = leadData.titulo || '';
+
+        const lyricsArea = document.getElementById('generatedLyrics');
+        if (lyricsArea) lyricsArea.value = leadData.letra_gerada;
+
+        const titleEl = document.getElementById('songTitle');
+        if (titleEl) titleEl.textContent = leadData.titulo || '(Carregando..)';
+
+        console.log('[RESTORE] Letra gerada restaurada');
+    }
+
+    // Restaura feedback do usuário (se existir)
+    if (leadData.alteracoes_usuario) {
+        const feedbackEl = document.getElementById('lyricFeedback');
+        if (feedbackEl) feedbackEl.value = leadData.alteracoes_usuario;
+    }
+
+    console.log('[RESTORE] Variáveis globais restauradas:', {
+        leadId: window.currentLeadId,
+        hasLyrics: !!window.generatedLyric
+    });
+}
+
+/**
+ * Pula as telas e força a exibição do modal direto no checkout de pagamento.
+ * @param {Object} leadData - Dados do lead recuperados do Supabase
+ */
+function jumpToStep3(leadData) {
+    console.log('[RESTORE] Pulando para Step 3 (Checkout)...');
+
+    // Restaura variáveis globais primeiro
+    restoreGlobalState(leadData);
+
+    // Restaura campos do formulário
+    restoreFormState(leadData);
+
+    // Abre o modal se não estiver aberto
+    const modal = document.getElementById('modal');
+    if (modal && modal.style.display !== 'flex') {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        console.log('[RESTORE] Modal aberto');
+    }
+
+    // Navega direto para Step 3
+    if (typeof goToStep3 === 'function') {
+        goToStep3();
+        console.log('[RESTORE] Navegado para Step 3');
+    } else {
+        console.error('[RESTORE] Função goToStep3 não encontrada');
+    }
+}
+
+/**
+ * Função principal de inicialização da recuperação de lead via URL.
+ * Chamada no DOMContentLoaded.
+ */
+async function initLeadRecovery() {
+    console.log('[RESTORE] Iniciando verificação de recuperação de lead...');
+
+    const leadData = await restoreLeadFromURL();
+
+    if (!leadData) {
+        console.log('[RESTORE] Nenhum lead para recuperar - fluxo normal');
+        return;
+    }
+
+    // Verifica se o lead já foi pago
+    if (leadData.status === 'paid' || leadData.status === 'completed') {
+        console.log('[RESTORE] Lead já foi pago - redirecionando para sucesso');
+        clearLeadFromURL();
+        // Opcional: redirecionar para sucesso.html
+        // window.location.href = 'sucesso.html';
+        return;
+    }
+
+    // Decide qual step abrir baseado no progresso do lead
+    if (leadData.letra_gerada) {
+        // Lead já tem letra gerada - vai direto para pagamento
+        console.log('[RESTORE] Lead tem letra gerada - indo para Step 3');
+        jumpToStep3(leadData);
+    } else {
+        // Lead não tem letra - restaura formulário e abre no Step 1
+        console.log('[RESTORE] Lead sem letra - restaurando Step 1');
+        restoreGlobalState(leadData);
+        restoreFormState(leadData);
+
+        // Abre o modal no Step 1
+        const modal = document.getElementById('modal');
+        if (modal && modal.style.display !== 'flex') {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            console.log('[RESTORE] Modal aberto no Step 1');
+        }
+    }
+}

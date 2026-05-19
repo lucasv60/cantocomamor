@@ -66,8 +66,8 @@ async function saveLead() {
         user_agent: navigator.userAgent
     };
 
-    // Validação mínima
-    if (!leadData.email || !leadData.destinatario) {
+    // Validação mínima: telefone + destinatario (email é opcional neste momento)
+    if (!leadData.telefone || !leadData.destinatario) {
         console.warn('[LEAD] Dados insuficientes para salvar lead');
         return null;
     }
@@ -876,13 +876,6 @@ async function goToStep3() {
         recipientDisplay.textContent = recipientValue;
     }
 
-    // Sincroniza email do Step 1 para Step 3 (campo de exibição)
-    const step1Email = document.getElementById('customerEmail')?.value?.trim();
-    const step3EmailText = document.getElementById('step3EmailText');
-    if (step3EmailText && step1Email) {
-        step3EmailText.textContent = step1Email;
-    }
-
     try { triggerEmailReminderOnPriceStep(); } catch (_) {}
 
     // Verifica estado do botão de pagamento ao entrar no Step 3
@@ -940,9 +933,8 @@ const step1Form = document.getElementById('step1Form');
 // Nota: CPF não está aqui pois é solicitado apenas no Step 3 quando PIX é selecionado
 const REQUIRED = [
     { id: 'customerFullName', errorId: 'customerFullNameError', validate: v => v.trim().length > 2 },
-    { id: 'customerEmail',   errorId: 'customerEmailError',  validate: v => /\S+@\S+\.\S+/.test(v) },
+    { id: 'customerPhone',   errorId: 'customerPhoneError',  validate: v => normalizeBRPhone(v).isValid },
     { id: 'customerName',    errorId: 'customerNameError',   validate: v => v.length > 1 },
-    // { id: 'customerPhone',   errorId: 'customerPhoneError',  validate: v => normalizeBRPhone(v).isValid },
     { id: 'recipient',       errorId: 'recipientError',      validate: v => v.trim().length > 0 },
     { id: 'relationship',    errorId: 'relationshipError',   validate: v => v.trim().length > 0 },
     { id: 'occasion',        errorId: 'occasionError',       validate: v => v.trim().length > 0 },
@@ -1005,14 +997,12 @@ function checkStep3Completion() {
     const nameInput = document.getElementById('customerName');
     const cpfInput = document.getElementById('customerCpf');
     const emailInput = document.getElementById('customerEmail');
-    const phoneInput = document.getElementById('customerPhone');
 
     const hasName = nameInput && nameInput.value.trim().length >= 2;
     const hasCpf = cpfInput && cpfInput.value.replace(/\D/g, '').length === 11;
     const hasEmail = emailInput && /\S+@\S+\.\S+/.test(emailInput.value.trim());
-    const hasPhone = phoneInput && phoneInput.value.replace(/\D/g, '').length >= 10;
 
-    const allValid = hasName && hasCpf && hasEmail && hasPhone;
+    const allValid = hasName && hasCpf && hasEmail;
 
     if (allValid) {
         btnFinalizar.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -1054,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkStep3Completion();
 
     // Listeners para campos do Step 3
-    const step3Fields = ['customerName', 'customerCpf', 'customerPhone'];
+    const step3Fields = ['customerName', 'customerCpf', 'customerEmail'];
     step3Fields.forEach(fieldId => {
         const el = document.getElementById(fieldId);
         if (el) {

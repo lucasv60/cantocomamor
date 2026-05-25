@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const original = regenerateLyricsBtn.innerHTML;
-            regenerateLyricsBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Gerando novamente...';
+            regenerateLyricsBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Aplicando ajustes...';
             regenerateLyricsBtn.disabled = true;
 
             const ok = await regenerateLyrics();
@@ -456,10 +456,15 @@ document.addEventListener('DOMContentLoaded', function() {
             window.generatedLyric = data.letra;
             window.lastGeneratedLyric = data.letra;
 
+            // Limpa o campo de feedback após aplicar os ajustes com sucesso
+            const feedbackField = document.getElementById('lyricFeedback');
+            if (feedbackField) feedbackField.value = '';
+
             // Ativa o botão "Continuar" após a letra ser revisada
             checkStep2Completion();
 
-
+            // Salva imediatamente no Supabase a nova versão da letra
+            await updateLeadData();
 
             // ===== incremento do limite (sucesso) =====
 

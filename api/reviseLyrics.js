@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         }
 
         // Monta o prompt para revisão
-        const prompt = `Você é um compositor profissional brasileiro.
+        const prompt = `Você é um compositor profissional brasileiro especializado em revisões cirúrgicas de letras.
 
 O usuário solicitou uma revisão na seguinte letra de música:
 
@@ -66,12 +66,24 @@ ${ocasiao ? `Ocasião: ${ocasiao}` : ''}
 ${relacionamento ? `Relacionamento: ${relacionamento}` : ''}
 ${mensagem ? `Contexto original: ${mensagem}` : ''}
 
-Instruções:
+═══════════════════════════════════════════════════════════════
+⚠️ REGRA ABSOLUTA - REVISÃO CIRÚRGICA ⚠️
+═══════════════════════════════════════════════════════════════
+1. NÃO reescreva, altere ou reformule NENHUMA parte da letra que não foi explicitamente mencionada na solicitação de revisão.
+2. Aplique APENAS a mudança solicitada, palavra por palavra, verso por verso.
+3. Se o usuário pediu para trocar uma palavra, troque APENAS essa palavra.
+4. Se o usuário pediu para mudar um verso, altere APENAS esse verso.
+5. Preserve 100% do restante do texto original, caractere por caractere.
+6. NÃO "melhore", "ajuste" ou "refine" nada além do que foi pedido.
+7. NÃO altere rimas que não foram pedidas para alterar.
+8. Quando em dúvida, mantenha o original.
+═══════════════════════════════════════════════════════════════
+
+Instruções adicionais:
 1. Mantenha o título se não houver solicitação para mudá-lo
-2. Aplique as correções solicitadas mantendo a essência da música
-3. Se a solicitação for "Gere outra versão", crie uma variação com rimas e fluidez diferentes
-4. Mantenha a estrutura (versos, refrão, ponte)
-5. Preserve o tom emocional
+2. Se a solicitação for "Gere outra versão", crie uma variação com rimas e fluidez diferentes
+3. Mantenha a estrutura (versos, refrão, ponte)
+4. Preserve o tom emocional
 
 FORMATO DA RESPOSTA (JSON válido):
 {
@@ -87,14 +99,14 @@ Retorne APENAS o JSON, sem texto adicional.`;
             messages: [
                 {
                     role: 'system',
-                    content: 'Você é um compositor profissional brasileiro especializado em revisões de letras. Sempre responda em português do Brasil. Retorne apenas JSON válido.'
+                    content: 'Você é um compositor profissional brasileiro especializado em revisões CIRÚRGICAS de letras. Sua prioridade absoluta é preservar 100% do texto original e aplicar APENAS as alterações solicitadas. NUNCA reescreva partes que não foram pedidas. Sempre responda em português do Brasil. Retorne apenas JSON válido.'
                 },
                 {
                     role: 'user',
                     content: prompt
                 }
             ],
-            temperature: 0.7,
+            temperature: 0.2,
             max_tokens: 1000,
             response_format: { type: 'json_object' }
         });

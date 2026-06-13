@@ -2134,7 +2134,51 @@ document.addEventListener('DOMContentLoaded', function() {
         // Monta o link do WhatsApp
         const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
-        // Atualiza o lead no Supabase com status 'clicou_whatsapp'
+        // 1. Geração do Event ID único
+        const leadEventId = window.currentLeadId 
+            ? `lead_${window.currentLeadId}_${Date.now()}`
+            : `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        // 2. Disparo do Navegador (GTM / DataLayer)
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'lead',
+            'event_id': leadEventId,
+            'content_name': 'Clique WhatsApp - Conversão',
+            'content_category': 'music_creation',
+            'user_data': {
+                'email': document.getElementById("customerEmail")?.value || '',
+                'phone': customerPhone,
+                'name': customerName,
+                'fbp': getCookie('_fbp') || null,
+                'fbc': getCookie('_fbc') || null,
+                'external_id': window.currentLeadId || null
+            }
+        });
+
+        // 3. Disparo do Servidor (Meta CAPI)
+        try {
+            await fetch('/api/meta-capi.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    eventName: 'Lead',
+                    eventId: leadEventId,
+                    userData: {
+                        email: document.getElementById("customerEmail")?.value || '',
+                        phone: customerPhone,
+                        name: customerName,
+                        fbp: getCookie('_fbp') || null,
+                        fbc: getCookie('_fbc') || null,
+                        externalId: window.currentLeadId || null
+                    }
+                })
+            });
+        } catch (err) {
+            console.error('[CAPI] Falha ao enviar evento de Lead:', err);
+        }
+
+        // 4. Persistência no Supabase
         if (window.currentLeadId) {
             const supabaseClient = window.API_CONFIG?.supabaseClient;
             if (supabaseClient) {
@@ -2155,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Abre o link do WhatsApp
+        // 5. Redirecionamento Final
         window.open(whatsappLink, '_blank');
     });
 });

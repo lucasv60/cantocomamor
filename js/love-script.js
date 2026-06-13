@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== Limite de revisões =====
     const REVISE_LIMIT = 2000;
     const REVISE_KEY   = 'revisoes_letra'; // sessionStorage
-    const WHATSAPP_LINK = 'https://wa.me/554499723421'; // Canto com Amor
+    const WHATSAPP_LINK = 'https://wa.me/554497234215'; // Canto com Amor
 
     function getReviseCount() {
         return parseInt(sessionStorage.getItem(REVISE_KEY) || '0');
@@ -610,15 +610,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // se for direto para pagamento
         // ADICIONE antes do if: cache para emails
         const basePayload = {
-            nome_completo:  document.getElementById("customerFullName").value.trim(),
-            destinatario:   document.getElementById("recipient").value,
-            email:          document.getElementById("customerEmail").value,
-            telefone:       getPhone().e164,
-            estilo:         document.getElementById("genre").value,
-            ocasiao:        document.getElementById("occasion").value,
-            relacionamento: document.getElementById("relationship").value,
-            mensagem:       document.getElementById("message").value,
-            preco:          document.getElementById("priceRef").value.replace('_', ','),
+            nome_completo:  document.getElementById("customerFullName")?.value?.trim() || '',
+            destinatario:   document.getElementById("recipient")?.value || '',
+            email:          document.getElementById("customerEmail")?.value?.trim() || '',
+            telefone:       getPhone().e164 || '',
+            estilo:         document.getElementById("genre")?.value || '',
+            ocasiao:        document.getElementById("occasion")?.value || '',
+            relacionamento: document.getElementById("relationship")?.value || '',
+            mensagem:       document.getElementById("message")?.value?.trim() || '',
+            preco:          document.getElementById("priceRef")?.value?.replace('_', ',') || '',
             vocalGender:    getVocalGender()
         };
         step1FormData = { ...basePayload };
@@ -779,32 +779,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // Voltar para o passo 2 (Letra da Música)
-    backToStep2Btn.addEventListener('click', function () {
-        const useOwnLyric = document.getElementById('useMessageAsLyric')?.checked;
+    if (backToStep2Btn) {
+        backToStep2Btn.addEventListener('click', function () {
+            const useOwnLyric = document.getElementById('useMessageAsLyric')?.checked;
 
-        // Sempre sair do step 3
-        step3Content.classList.add('hidden');
-        step3Indicator.classList.remove('bg-purple-600', 'text-white');
-        step3Indicator.classList.add('bg-gray-200', 'text-gray-600');
+            // Sempre sair do step 3
+            step3Content.classList.add('hidden');
+            step3Indicator.classList.remove('bg-purple-600', 'text-white');
+            step3Indicator.classList.add('bg-gray-200', 'text-gray-600');
 
-        if (useOwnLyric) {
-            // Se marcou "Desejo usar a minha letra", volta para o STEP 1
-            step1Content.classList.remove('hidden');
-            step2Content.classList.add('hidden');
+            if (useOwnLyric) {
+                // Se marcou "Desejo usar a minha letra", volta para o STEP 1
+                step1Content.classList.remove('hidden');
+                step2Content.classList.add('hidden');
 
-            step2Indicator.classList.remove('bg-purple-600', 'text-white');
-            step2Indicator.classList.add('bg-gray-200', 'text-gray-600');
+                step2Indicator.classList.remove('bg-purple-600', 'text-white');
+                step2Indicator.classList.add('bg-gray-200', 'text-gray-600');
 
-            step1Indicator.classList.remove('bg-gray-200', 'text-gray-600');
-            step1Indicator.classList.add('bg-purple-600', 'text-white');
-        } else {
-            // Fluxo normal: voltar para o STEP 2
-            step2Content.classList.remove('hidden');
+                step1Indicator.classList.remove('bg-gray-200', 'text-gray-600');
+                step1Indicator.classList.add('bg-purple-600', 'text-white');
+            } else {
+                // Fluxo normal: voltar para o STEP 2
+                step2Content.classList.remove('hidden');
 
-            step2Indicator.classList.remove('bg-gray-200', 'text-gray-600');
-            step2Indicator.classList.add('bg-purple-600', 'text-white');
-        }
-    });
+                step2Indicator.classList.remove('bg-gray-200', 'text-gray-600');
+                step2Indicator.classList.add('bg-purple-600', 'text-white');
+            }
+        });
+    }
 
 
     // Função para gerar a letra da música (simulação)
@@ -1007,10 +1009,22 @@ async function goToStep3() {
         recipientDisplay.textContent = recipientValue;
     }
 
-    try { triggerEmailReminderOnPriceStep(); } catch (_) {}
+    // [NOVO] Injeta título e letra nos elementos da nova interface
+    const finalSongTitle = document.getElementById('finalSongTitle');
+    const finalLyrics = document.getElementById('finalLyrics');
+    
+    if (finalSongTitle) {
+        finalSongTitle.textContent = window.generatedTitle || 'Sua Música';
+    }
+    if (finalLyrics) {
+        finalLyrics.textContent = window.generatedLyric || '';
+    }
 
-    // Verifica estado do botão de pagamento ao entrar no Step 3
-    checkStep3Completion();
+    // [COMENTADO] triggerEmailReminderOnPriceStep() - função de checkout removida
+    // try { triggerEmailReminderOnPriceStep(); } catch (_) {}
+
+    // [COMENTADO] checkStep3Completion() - validação de checkout removida
+    // checkStep3Completion();
 }
 
 
@@ -1125,13 +1139,17 @@ function checkStep3Completion() {
     const btnFinalizar = document.getElementById('btnFinalizarPagamento');
     if (!btnFinalizar) return;
 
+    // Elementos que podem não existir no novo fluxo
     const nameInput = document.getElementById('customerName');
     const cpfInput = document.getElementById('customerCpf');
     const emailInput = document.getElementById('customerEmail');
 
-    const hasName = nameInput && nameInput.value.trim().length >= 2;
-    const hasCpf = cpfInput && cpfInput.value.replace(/\D/g, '').length === 11;
-    const hasEmail = emailInput && /\S+@\S+\.\S+/.test(emailInput.value.trim());
+    // Se os elementos não existirem, não há validação a ser feita
+    if (!nameInput && !cpfInput && !emailInput) return;
+
+    const hasName = nameInput ? nameInput.value.trim().length >= 2 : true;
+    const hasCpf = cpfInput ? cpfInput.value.replace(/\D/g, '').length === 11 : true;
+    const hasEmail = emailInput ? /\S+@\S+\.\S+/.test(emailInput.value.trim()) : true;
 
     const allValid = hasName && hasCpf && hasEmail;
 
@@ -2087,6 +2105,59 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carrossel desativado - agora sincronizado com o Player de Música
     // As setas do mockup controlam a troca de depoimentos
     console.log('✅ Depoimentos sincronizados com o Player');
+});
+
+// =============================================
+// NOVO: Event Listener do Botão do WhatsApp
+// =============================================
+document.addEventListener('DOMContentLoaded', function() {
+    const whatsappButton = document.getElementById('whatsappButton');
+    
+    if (!whatsappButton) {
+        console.warn('[WhatsApp] Botão não encontrado');
+        return;
+    }
+
+    // Número de WhatsApp de atendimento (Canto com Amor)
+    const WHATSAPP_NUMBER = '5544997234215'; // Ajuste para o seu número
+
+    whatsappButton.addEventListener('click', async function() {
+        // Captura os dados do cliente e da música
+        const customerName = document.getElementById('customerFullName')?.value || 'Cliente';
+        const customerPhone = getPhone()?.e164 || '';
+        const songTitle = window.generatedTitle || 'Música Personalizada';
+        const songLyric = window.generatedLyric || '';
+
+        // Monta a mensagem formatada
+        const message = `Olá! Quero transformar minha letra em música real. \n\n *Título:* ${songTitle}\n\n *Letra:* \n${songLyric}`;
+
+        // Monta o link do WhatsApp
+        const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+        // Atualiza o lead no Supabase com status 'clicou_whatsapp'
+        if (window.currentLeadId) {
+            const supabaseClient = window.API_CONFIG?.supabaseClient;
+            if (supabaseClient) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('leads')
+                        .update({ status: 'clicou_whatsapp' })
+                        .eq('id', window.currentLeadId);
+                    
+                    if (error) {
+                        console.error('[WhatsApp] Erro ao atualizar status:', error);
+                    } else {
+                        console.log('[WhatsApp] Status atualizado com sucesso');
+                    }
+                } catch (err) {
+                    console.error('[WhatsApp] Erro inesperado ao atualizar status:', err);
+                }
+            }
+        }
+
+        // Abre o link do WhatsApp
+        window.open(whatsappLink, '_blank');
+    });
 });
 
 // =============================================

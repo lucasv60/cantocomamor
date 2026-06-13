@@ -2139,7 +2139,10 @@ document.addEventListener('DOMContentLoaded', function() {
             ? `lead_${window.currentLeadId}_${Date.now()}`
             : `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-        // 2. Disparo do Navegador (GTM / DataLayer)
+        // 2. Captura de cookies da Meta
+        const whatsappCookies = window.MetaTracking?.getMetaCookies() || {};
+
+        // 3. Disparo do Navegador (GTM / DataLayer)
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             'event': 'lead',
@@ -2150,13 +2153,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 'email': document.getElementById("customerEmail")?.value || '',
                 'phone': customerPhone,
                 'name': customerName,
-                'fbp': getCookie('_fbp') || null,
-                'fbc': getCookie('_fbc') || null,
+                'fbp': whatsappCookies.fbp || null,
+                'fbc': whatsappCookies.fbc || null,
                 'external_id': window.currentLeadId || null
             }
         });
 
-        // 3. Disparo do Servidor (Meta CAPI)
+        // 4. Disparo do Servidor (Meta CAPI)
         try {
             await fetch('/api/meta-capi.js', {
                 method: 'POST',
@@ -2168,8 +2171,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         email: document.getElementById("customerEmail")?.value || '',
                         phone: customerPhone,
                         name: customerName,
-                        fbp: getCookie('_fbp') || null,
-                        fbc: getCookie('_fbc') || null,
+                        fbp: whatsappCookies.fbp || null,
+                        fbc: whatsappCookies.fbc || null,
                         externalId: window.currentLeadId || null
                     }
                 })

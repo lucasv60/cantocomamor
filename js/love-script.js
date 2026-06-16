@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== Limite de revisões =====
     const REVISE_LIMIT = 2000;
     const REVISE_KEY   = 'revisoes_letra'; // sessionStorage
-    const WHATSAPP_LINK = 'https://wa.me/554497234215'; // Canto com Amor
+    const WHATSAPP_LINK = 'https://wa.me/5544997566376'; // Canto com Amor
 
     function getReviseCount() {
         return parseInt(sessionStorage.getItem(REVISE_KEY) || '0');
@@ -2119,7 +2119,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Número de WhatsApp de atendimento (Canto com Amor)
-    const WHATSAPP_NUMBER = '5544997234215'; // Ajuste para o seu número
+    const WHATSAPP_NUMBER = '5544997566376'; // Ajuste para o seu número
 
     whatsappButton.addEventListener('click', async function() {
         // Captura os dados do cliente e da música

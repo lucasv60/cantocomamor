@@ -960,12 +960,14 @@ async function updateLeadData() {
 }
 
 // Substitua a função existente por esta versão unificada (sem parâmetros)
-async function goToStep3() {
-    // Atualiza lead no Supabase antes de avançar
-    await updateLeadData();
-    const step1Content = document.getElementById('step1Content');
-    const step2Content = document.getElementById('step2Content');
-    const step3Content = document.getElementById('step3Content');
+    async function goToStep3() {
+        // Atualiza lead no Supabase antes de avançar
+        await updateLeadData();
+        // Configura o preço fixo para tracking
+        window.currentBasePrice = 39.90;
+        const step1Content = document.getElementById('step1Content');
+        const step2Content = document.getElementById('step2Content');
+        const step3Content = document.getElementById('step3Content');
 
     const step1Indicator = document.getElementById('step1Indicator');
     const step2Indicator = document.getElementById('step2Indicator');
